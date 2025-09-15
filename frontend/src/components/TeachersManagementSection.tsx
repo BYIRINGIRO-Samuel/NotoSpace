@@ -1,55 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 interface Teacher {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  joinDate: string;
+  createdAt: string;
   status: 'pending' | 'active' | 'inactive';
 }
 
 const TeachersManagementSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const highlight = params.get('highlight');
 
-  const [teachers] = useState<Teacher[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      joinDate: '2024-01-15',
-      status: 'active'
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      joinDate: '2024-01-20',
-      status: 'pending'
-    },
-    {
-      id: '3',
-      name: 'Mike Johnson',
-      email: 'mike.johnson@example.com',
-      joinDate: '2024-02-01',
-      status: 'inactive'
-    },
-    {
-      id: '4',
-      name: 'Sarah Williams',
-      email: 'sarah.williams@example.com',
-      joinDate: '2024-02-10',
-      status: 'active'
-    },
-    {
-      id: '5',
-      name: 'David Brown',
-      email: 'david.brown@example.com',
-      joinDate: '2024-02-15',
-      status: 'active'
-    }
-  ]);
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('/api/users/admins/list/teachers', { withCredentials: true });
+        if (response.status === 200 && response.data && Array.isArray(response.data.users)) {
+          setTeachers(response.data.users);
+        } else {
+          toast.error('Failed to fetch teachers');
+        }
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message || 'Failed to fetch teachers');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeachers();
+  }, []);
 
   // Filter teachers based on search query and status
   const filteredTeachers = teachers.filter(teacher => {
@@ -57,6 +45,15 @@ const TeachersManagementSection = () => {
                          teacher.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = selectedStatus === 'all' || teacher.status === selectedStatus;
     return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    if (a.status === 'pending' && b.status !== 'pending') {
+      return -1; // a comes before b
+    }
+    if (a.status !== 'pending' && b.status === 'pending') {
+      return 1; // b comes before a
+    }
+    // If both have the same pending status or neither are pending, maintain original order (or sort by another criteria if needed)
+    return 0;
   });
 
   const handleConfirmClick = async (teacher: Teacher) => {
@@ -116,68 +113,88 @@ const TeachersManagementSection = () => {
       {/* Teachers Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Teacher
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Join Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredTeachers.map((teacher) => (
-                <tr key={teacher.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="text-gray-500 font-medium">
-                          {teacher.name.split(' ').map(n => n[0]).join('')}
-                        </span>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{teacher.name}</div>
-                        <div className="text-sm text-gray-500">{teacher.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {teacher.joinDate}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${teacher.status === 'active' ? 'bg-green-100 text-green-800' : 
-                        teacher.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                        'bg-red-100 text-red-800'}`}>
-                      {teacher.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleConfirmClick(teacher)}
-                      className="text-green-600 hover:text-green-900 mr-4"
-                    >
-                      Confirm
-                    </button>
-                    <button
-                      onClick={() => handleDenyClick(teacher)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Deny
-                    </button>
-                  </td>
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+            </div>
+          ) : filteredTeachers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <img src="/assets/images/notfound.jpg" alt="No teachers found" className="w-40 h-40 object-contain mb-4" />
+              <p className="text-gray-500 text-lg">No teachers found.</p>
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Teacher
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Join Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredTeachers.map((teacher) => (
+                  <tr key={teacher._id} className={`hover:bg-gray-50 ${highlight === teacher._id || highlight === teacher.name ? 'bg-yellow-100' : ''}`}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <span className="text-gray-500 font-medium">
+                            {teacher.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{teacher.name}</div>
+                          <div className="text-sm text-gray-500">{teacher.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {teacher.createdAt ? new Date(teacher.createdAt).toLocaleDateString() : '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        ${teacher.status === 'active' ? 'bg-green-100 text-green-800' : 
+                          teacher.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-red-100 text-red-800'}`}>
+                        {teacher.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      {teacher.status === 'pending' ? (
+                        <>
+                          <button
+                            onClick={() => handleConfirmClick(teacher)}
+                            className="text-green-600 hover:text-green-900 mr-4"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            onClick={() => handleDenyClick(teacher)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Deny
+                          </button>
+                        </>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

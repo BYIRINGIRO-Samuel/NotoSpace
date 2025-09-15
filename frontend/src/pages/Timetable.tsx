@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Topbar from '../components/Topbar';
 import { toast } from 'react-hot-toast';
@@ -27,12 +27,34 @@ interface Timetable {
   gridTimeSlots: { time: string; monday: string; tuesday: string; wednesday: string; thursday: string; friday: string }[];
 }
 
+interface User {
+  name: string;
+  email: string;
+  role: {
+    type: string;
+  };
+}
+
 const Timetable = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'create'>('create');
+  const [activeTab, setActiveTab] = useState<'create' | 'view'>('create');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [timetableToDelete, setTimetableToDelete] = useState<Timetable | null>(null);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
 
   const [timetables] = useState<Timetable[]>([
     {
@@ -183,7 +205,7 @@ const Timetable = () => {
       </div>
 
       <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
+        <Topbar userName={user?.name || ''} />
         <div className="border-b border-gray-200"></div>
 
         <div className="flex-1 overflow-y-auto p-6">
@@ -200,6 +222,16 @@ const Timetable = () => {
                   }`}
                 >
                   Create Timetable
+                </button>
+                <button
+                  onClick={() => setActiveTab('view')}
+                  className={`px-4 py-2 rounded-lg ${
+                    activeTab === 'view'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  View Timetables
                 </button>
               </div>
             </div>
@@ -418,7 +450,6 @@ const Timetable = () => {
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-300">Monday</th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-300">Tuesday</th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-300">Wednesday</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-300">Thursday</th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Friday</th>
                         <th></th> 
                       </tr>

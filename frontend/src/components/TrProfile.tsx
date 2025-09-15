@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface User {
   _id: string;
@@ -97,14 +98,24 @@ const TrProfilePage = () => {
            setProfilePicturePreview(response.data.user.profilePicture || null);
            setNewPassword('');
            setProfilePictureFile(null);
+           toast.success('Profile updated successfully!');
          }
        } catch (error) {
          console.error('Error updating profile:', error);
+         if (axios.isAxiosError(error)) {
+           const backendErrorMessage = error.response?.data?.message;
+           const backendError = error.response?.data?.error;
+           const displayMessage = backendErrorMessage || backendError || 'Failed to update profile. Please try again.';
+           toast.error(displayMessage);
+         } else {
+           toast.error('An unexpected error occurred while updating profile.');
+         }
        } finally {
          setIsLoading(false);
        }
      } else {
        console.error("User ID is missing, cannot update profile.");
+       toast.error('User information missing. Please log in again.');
        setIsLoading(false);
      }
   };

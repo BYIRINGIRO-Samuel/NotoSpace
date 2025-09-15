@@ -13,6 +13,7 @@ const Login = () => {
   const [showOTP, setShowOTP] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [resetToken, setResetToken] = useState("");
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -57,14 +58,12 @@ const Login = () => {
       console.error('Login error:', err);
       if (axios.isAxiosError(err)) {
         const backendErrorMessage = err.response?.data?.message;
-        // Check if the error message is related to invalid credentials
-        if (backendErrorMessage === 'Invalid credentials' || err.response?.status === 400) {
-          toast.error('Invalid credentials');
-        } else {
-          // Use backend message if available, otherwise a generic error
-          const displayMessage = backendErrorMessage || 'An error occurred during login.';
-          toast.error(displayMessage);
-        }
+        const backendError = err.response?.data?.error;
+        
+        // Prioritize backend message or error if available
+        const displayMessage = backendErrorMessage || backendError || 'An error occurred during login.';
+        toast.error(displayMessage);
+
       } else {
         toast.error('An unexpected error occurred.');
       }
@@ -73,8 +72,13 @@ const Login = () => {
     }
   };
 
-  const handleResetPassword = (email: string) => {
+  const handleResetPasswordClick = () => {
+    setShowReset(true);
+  };
+
+  const handleForgotPasswordSuccess = (email: string, token: string) => {
     setResetEmail(email);
+    setResetToken(token);
     setShowReset(false);
     setShowOTP(true);
   };
@@ -82,6 +86,14 @@ const Login = () => {
   const handleOTPVerified = () => {
     setShowOTP(false);
     setShowNewPassword(true);
+  };
+
+  const handleBackOrError = () => {
+    setResetToken("");
+    setResetEmail("");
+    if(showOTP) setShowOTP(false);
+    else if(showNewPassword) setShowNewPassword(false);
+    else setShowReset(false);
   };
 
   return (
@@ -124,11 +136,11 @@ const Login = () => {
 
         <div className="md:w-1/2 w-full flex flex-col justify-center p-8 bg-white">
           {showNewPassword ? (
-            <NewPassword onBackToLogin={() => setShowNewPassword(false)} />
+            <NewPassword onBackToLogin={handleBackOrError} resetToken={resetToken} />
           ) : showOTP ? (
-            <EnterOTP onBack={() => setShowOTP(false)} email={resetEmail} onOTPVerified={handleOTPVerified} />
+            <EnterOTP onBack={handleBackOrError} email={resetEmail} onOTPVerified={handleOTPVerified} resetToken={resetToken} />
           ) : showReset ? (
-            <ResetPassword onBackToLogin={() => setShowReset(false)} onResetPassword={handleResetPassword} />
+            <ResetPassword onBackToLogin={handleBackOrError} onForgotPasswordSuccess={handleForgotPasswordSuccess} />
           ) : (
             <>
               <div className="flex justify-center mb-2 md:hidden">
@@ -231,7 +243,7 @@ const Login = () => {
                   <button
                     type="button"
                     className="text-[#1DA1F2] text-sm hover:underline"
-                    onClick={() => setShowReset(true)}
+                    onClick={handleResetPasswordClick}
                   >
                     Forgot password?
                   </button>
@@ -244,25 +256,18 @@ const Login = () => {
                   {loading ? 'Logging in...' : 'Continue'}
                 </button>
               </form>
-              <div className="flex items-center my-4">
-                <div className="flex-1 h-px bg-gray-200" />
-                <span className="mx-2 text-gray-400 text-sm">
-                  Or Continue with
-                </span>
-                <div className="flex-1 h-px bg-gray-200" />
-              </div>
-              <div className="mb-4">
-                <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 bg-gray-300 rounded-[10px] py-2 hover:bg-gray-400 transition w-full md:w-1/2">
-                <img src="/assets/icons/google.svg" alt="google" className="w-7 h-7" />
+              <div className="flex flex-col items-center justify-center my-4">
+                <span className="text-gray-500 text-sm mb-2">Or Continue with</span>
+                <button
+                  className="flex items-center justify-center w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-200"
+                >
+                  <img
+                    src="https://img.icons8.com/color/16/000000/google-logo.png"
+                    alt="Google logo"
+                    className="mr-2"
+                  />
                   Google
                 </button>
-              </div>
-              
-              <div className="text-center text-sm text-gray-500 mt-4">
-                Don&apos;t have an account?{" "}
-                <Link to="/signup" className="text-[#1DA1F2] hover:underline">
-                  Sign up
-                </Link>
               </div>
             </>
           )}

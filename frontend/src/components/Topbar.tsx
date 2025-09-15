@@ -1,9 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import ProfileDropdown from './ProfileDropdown';
 import Rightsidebar from './Rightsidebar';
+import MobileMenu from "./MobileMenu";
 
 interface TopbarProps {
   userName: string;
+}
+
+interface User {
+  name: string;
+  email: string;
+  role: {
+    type: string;
+  };
+  profilePicture?: string;
 }
 
 const Topbar: React.FC<TopbarProps> = ({ userName }) => {
@@ -12,6 +22,9 @@ const Topbar: React.FC<TopbarProps> = ({ userName }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [firstName, setFirstName] = useState<string>('');
   const [profilePicture, setProfilePicture] = useState<string | undefined>(undefined);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [userRole, setUserRole] = useState<string>('');
+  const [initials, setInitials] = useState<string>('');
 
   useEffect(() => {
     if (userName) {
@@ -21,13 +34,64 @@ const Topbar: React.FC<TopbarProps> = ({ userName }) => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
-        const user = JSON.parse(userStr);
+        const user: User = JSON.parse(userStr);
         setProfilePicture(user.profilePicture || undefined);
+        setUserRole(user.role?.type || '');
+        if (user.name) {
+          const names = user.name.split(' ').filter(n => n); 
+          if (names.length > 1) {
+            setInitials(names[0][0] + names[names.length - 1][0]);
+          } else if (names.length === 1) {
+            setInitials(names[0][0]);
+          }
+        }
       } catch (error) {
         console.error('Error parsing user data from localStorage:', error);
       }
     }
   }, [userName]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user: User = JSON.parse(userStr);
+          setProfilePicture(user.profilePicture || undefined);
+          setUserRole(user.role?.type || '');
+          if (user.name) {
+            const names = user.name.split(' ').filter(n => n); 
+            if (names.length > 1) {
+              setInitials(names[0][0] + names[names.length - 1][0]);
+            } else if (names.length === 1) {
+              setInitials(names[0][0]);
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing user data from localStorage on storage change:', error);
+        }
+      } else {
+        setProfilePicture(undefined);
+        setUserRole('');
+        setInitials('');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -55,24 +119,17 @@ const Topbar: React.FC<TopbarProps> = ({ userName }) => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full sticky top-0 z-50">
-      <div className="flex items-center justify-between px-8 py-4 border-b bg-white">
-        <div className="flex-1 max-w-md">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Try search a course"
-              className="w-full pl-10 pr-4 py-2 rounded-[10px] bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm"
-            />
-            <img
-              src="/assets/icons/search.svg"
-              alt="search"
-              className="absolute top-1/2 left-3 transform -translate-y-1/2 w-4 h-4 text-gray-400"
-            />
-          </div>
+    <div
+      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
+        isScrolled ? "bg-white shadow-sm" : "bg-white"
+      }`}
+    >
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-4">
+          <MobileMenu userName={userName} userRole={userRole} />
         </div>
 
-        <div className="flex items-center gap-6 ml-6">
+        <div className="flex items-center gap-4">
           <button 
             className="relative p-2 rounded-full hover:bg-gray-100 transition"
             onClick={toggleRightSidebar}
@@ -105,11 +162,9 @@ const Topbar: React.FC<TopbarProps> = ({ userName }) => {
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (
-                <img
-                  src="/assets/images/notfound.jpg"
-                  alt="Default User Avatar"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
+                <div className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm font-bold">
+                  {initials.toUpperCase()}
+                </div>
               )}
               
               <span className="font-medium text-gray-700 text-sm">{firstName}</span>

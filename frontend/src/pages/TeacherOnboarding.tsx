@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // Assuming a type definition for Class and Course might be needed later
 // import type { Class, Course } from "../types"; 
 
@@ -11,39 +12,50 @@ interface TeacherClassData {
 const TeacherOnboarding = () => {
   const navigate = useNavigate();
   const [teacherClasses, setTeacherClasses] = useState<TeacherClassData[]>([]);
-  const [selectedClassName, setSelectedClassName] = useState("");
-  const [availableCourses, setAvailableCourses] = useState<string[]>([]);
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [availableClasses, setAvailableClasses] = useState<any[]>([]);
+  const [availableCourses, setAvailableCourses] = useState<any[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Placeholder data - replace with actual data fetching later
-  const allAvailableClasses = [
-    { name: "primary 1", courses: ["Mathematics", "Science", "Social Studies"] },
-    { name: "primary 2", courses: ["Mathematics", "Science and Elementary Technology", "Kinyarwanda"] },
-    { name: "primary 3", courses: ["Kinyarwanda", "Social and Religious Studies", "Mathematics"] },
-    { name: "S1", courses: ["Mathematics", "Physics", "Chemistry"] },
-    { name: "S2", courses: ["Mathematics", "Physics", "Chemistry"] },
-  ];
+  // Fetch all classes for the teacher's school on mount
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (!userStr) return;
+    // const user = JSON.parse(userStr);
+    // const schoolId = user?.school?._id;
+    // if (!schoolId) return;
+    axios.get('/api/users/teachers/list/available-classes', { withCredentials: true })
+      .then(res => {
+        if (res.status === 200 && Array.isArray(res.data.classes)) {
+          setAvailableClasses(res.data.classes);
+        } else {
+          setAvailableClasses([]);
+        }
+      })
+      .catch(() => setAvailableClasses([]));
+  }, []);
 
-  const handleClassSelect = (className: string) => {
-    setSelectedClassName(className);
-    const selectedClass = allAvailableClasses.find(c => c.name === className);
-    if (selectedClass) {
-      setAvailableCourses(selectedClass.courses);
-      setSelectedCourses([]); // Reset selected courses when class changes
-    } else {
-      setAvailableCourses([]);
-      setSelectedCourses([]);
-    }
+  // When a class is selected, set its courses
+  const handleClassSelect = (classId: string) => {
+    setSelectedClassId(classId);
+    setSelectedCourses([]);
     setError("");
     setSuccess("");
+    const selectedClass = availableClasses.find(cls => cls._id === classId);
+    if (selectedClass && Array.isArray(selectedClass.courses)) {
+      setAvailableCourses(selectedClass.courses);
+    } else {
+      setAvailableCourses([]);
+    }
   };
 
   const handleCourseSelect = (courseName: string) => {
-    setSelectedCourses(prev => 
-      prev.includes(courseName) 
-        ? prev.filter(course => course !== courseName) 
+    setSelectedCourses(prev =>
+      prev.includes(courseName)
+        ? prev.filter(course => course !== courseName)
         : [...prev, courseName]
     );
   };
@@ -51,43 +63,57 @@ const TeacherOnboarding = () => {
   const handleAddClassWithCourses = () => {
     setError("");
     setSuccess("");
-
-    if (!selectedClassName) {
+    if (!selectedClassId) {
       setError("Please select a class.");
       return;
     }
-
     if (selectedCourses.length === 0) {
-      setError(`Please select at least one course for ${selectedClassName}.`);
+      setError("Please select at least one course for the selected class.");
       return;
     }
-
-    const existingClassIndex = teacherClasses.findIndex(tc => tc.className === selectedClassName);
-
+    const selectedClass = availableClasses.find(cls => cls._id === selectedClassId);
+    if (!selectedClass) {
+      setError("Selected class not found.");
+      return;
+    }
+    const existingClassIndex = teacherClasses.findIndex(tc => tc.className === selectedClass.name);
     if (existingClassIndex > -1) {
       // If class already exists, update its courses
       const updatedTeacherClasses = [...teacherClasses];
       updatedTeacherClasses[existingClassIndex].courseNames = [
-        ...new Set([...updatedTeacherClasses[existingClassIndex].courseNames, ...selectedCourses]) // Add unique courses
+        ...new Set([...updatedTeacherClasses[existingClassIndex].courseNames, ...selectedCourses])
       ];
       setTeacherClasses(updatedTeacherClasses);
-      setSuccess(`Updated courses for ${selectedClassName}.`);
+      setSuccess(`Updated courses for ${selectedClass.name}.`);
     } else {
-      // If class is new, add it
-      setTeacherClasses(prev => [...prev, { className: selectedClassName, courseNames: selectedCourses }]);
-      setSuccess(`Added ${selectedClassName} with selected courses.`);
+      setTeacherClasses(prev => [...prev, { className: selectedClass.name, courseNames: selectedCourses }]);
+      setSuccess(`Added ${selectedClass.name} with selected courses.`);
     }
-    
-    // Optionally reset selections after adding/updating
-    // setSelectedClassName("");
-    // setAvailableCourses([]);
-    // setSelectedCourses([]);
   };
 
-  const handleSubmit = () => {
-    console.log("Teacher Onboarding Data:", teacherClasses);
-    // API call would go here
-    navigate("/teacherdashboard");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      const res = await axios.post('/api/users/teachers/onboarding', {
+        classId: selectedClassId,
+        courseIds: selectedCourses
+      }, { withCredentials: true });
+      if (res.status === 200) {
+        setSuccess('Onboarding data saved successfully!');
+        setTimeout(() => {
+          navigate('/teacherdashboard');
+        }, 1000);
+      } else {
+        setError('Failed to save onboarding data.');
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Failed to save onboarding data.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -125,14 +151,14 @@ const TeacherOnboarding = () => {
               </label>
               <select
                 id="classSelect"
-                value={selectedClassName}
+                value={selectedClassId}
                 onChange={(e) => handleClassSelect(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="">-- Select a Class --</option>
-                {allAvailableClasses.map(cls => (
-                  <option key={cls.name} value={cls.name}>{cls.name}</option>
+                {availableClasses.map(cls => (
+                  <option key={cls._id} value={cls._id}>{cls.name}</option>
                 ))}
               </select>
             </div>
@@ -141,25 +167,26 @@ const TeacherOnboarding = () => {
             {availableCourses.length > 0 && (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-lg font-medium text-gray-700 mb-4">
-                  Select Courses for {selectedClassName}
+                  Select Courses for {availableClasses.find(cls => cls._id === selectedClassId)?.name || ""}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  {availableCourses.map((course, index) => (
-                    <div key={index} className="flex items-center space-x-2">
+                  {availableCourses.map((course: any) => (
+                    <label key={course._id}>
                       <input
                         type="checkbox"
-                        id={`course-${index}`}
-                        checked={selectedCourses.includes(course)}
-                        onChange={() => handleCourseSelect(course)}
+                        value={course._id}
+                        checked={selectedCourses.includes(course._id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedCourses([...selectedCourses, course._id]);
+                          } else {
+                            setSelectedCourses(selectedCourses.filter(id => id !== course._id));
+                          }
+                        }}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
-                      <label
-                        htmlFor={`course-${index}`}
-                        className="text-sm text-gray-700"
-                      >
-                        {course}
-                      </label>
-                    </div>
+                      {course.name}
+                    </label>
                   ))}
                 </div>
               </div>
@@ -168,7 +195,7 @@ const TeacherOnboarding = () => {
             <button
               onClick={handleAddClassWithCourses}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!selectedClassName || selectedCourses.length === 0}
+              disabled={!selectedClassId || selectedCourses.length === 0}
             >
               Add Selected Courses to Class
             </button>
@@ -220,9 +247,21 @@ const TeacherOnboarding = () => {
           <button
             onClick={handleSubmit}
             className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={teacherClasses.length === 0}
+            disabled={loading}
           >
-            Complete Onboarding
+            {loading ? (
+              <span className="spinner" style={{
+                border: '2px solid #f3f3f3',
+                borderTop: '2px solid #3498db',
+                borderRadius: '50%',
+                width: 16,
+                height: 16,
+                animation: 'spin 1s linear infinite',
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                marginRight: 8
+              }} />
+            ) : 'Complete Onboarding'}
           </button>
         </div>
 

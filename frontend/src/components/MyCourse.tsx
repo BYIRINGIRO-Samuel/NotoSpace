@@ -54,7 +54,21 @@ const MyCourse: React.FC = () => {
         {courses.map((course) => (
           <div key={course.id} className="grid grid-cols-5 gap-4 items-center border-b border-gray-100 py-3">
             <div className="col-span-2 flex items-center gap-3">
-              <img src={course.icon} alt={course.name} className="w-10 h-10 rounded-md object-cover" />
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <svg
+                  className="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
               <span className="text-gray-800 font-medium text-sm">{course.name}</span>
             </div>
             <div className="text-gray-700 text-sm">{course.lessonsProgress}</div>

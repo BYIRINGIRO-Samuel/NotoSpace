@@ -19,6 +19,8 @@ import sendEmail, { IEmailOptions } from "../utils/email.js";
 import { INotification } from "../models/notification.model.js";
 import Notification from "../models/notification.model.js";
 import { generateMessage } from "../utils/message.js";
+import nodemailer from "nodemailer";
+import { generateRandomToken, hashToken } from "../utils/generateRandom.js";
 
 const courseValidationSchema = Joi.object({
   name: Joi.string().required(),
@@ -42,7 +44,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
     profilePicture: Joi.string()
       .uri({
         allowRelative: false,
-        scheme: ["http", "https", "data:image/png;base64"],
+        scheme: ["http", "https", "data:image/jpeg", "data:image/png", "data:image/jpg"],
         allowQuerySquareBrackets: false,
       })
       .allow("")
@@ -147,19 +149,28 @@ export const createUser: RequestHandler = async (req, res, next) => {
     const token = generateTokenAndCookie(newUser.publicId, req, res);
 
     //notify the school admin that a new account has been created and needs approval
-    if (role === "student" || role === "teacher") {
-      const approvingNotificaton: INotification = {
-        title: "New Account Approval Required",
-        message: `A new account has been created for ${name} with email ${email} and role ${role}. Please approve or reject it.`,
+    if (role === "teacher") {
+      // Find the school admin
+      const schoolAdminId = schoolExists!.schoolAdmin;
+      await Notification.create({
+        title: "New Teacher Approval Required",
+        message: `A new teacher (${name}) has signed up and needs approval.`,
         type: "approval",
         createdBy: newUser._id,
-        createdFor: [schoolExists!.schoolAdmin],
-        _id: new mongoose.Types.ObjectId(),
-      };
-      const newNotification = new Notification(approvingNotificaton);
-      await newNotification.save();
+        createdFor: [schoolAdminId],
+      });
     }
-
+    if (role === "student") {
+      // Find the school admin
+      const schoolAdminId = schoolExists!.schoolAdmin;
+      await Notification.create({
+        title: "New Student Signup",
+        message: `A new student (${name}) has signed up and is awaiting processing.`,
+        type: "approval",
+        createdBy: newUser._id,
+        createdFor: [schoolAdminId],
+      });
+    }
 
     await newUser.save();
     // Populate role and school before sending the response
@@ -293,7 +304,7 @@ export const updateProfile: RequestHandler = async (
     profilePicture: Joi.string()
       .uri({
         allowRelative: false,
-        scheme: ["http", "https", "data"],
+        scheme: ["http", "https", "data:image/jpeg", "data:image/png", "data:image/jpg"],
         allowQuerySquareBrackets: false,
       })
       .allow("")
@@ -313,19 +324,28 @@ export const updateProfile: RequestHandler = async (
       req.user!._id,
       { name, email, profilePicture },
       { new: true },
-    );
+    ).populate('role', 'type')
+     .populate('school', 'name _id')
+     .populate('classname', 'name _id');
+
     if (!updatedUser) throw new HttpError(400, "User not found");
 
     updatedUser.updatedAt = new Date();
     await updatedUser.save();
+
     res.status(200).json({
       message: "Profile updated successfully",
-      user: _.omit(updatedUser.toObject(), [
-        "password",
-        "__v",
-        "createdAt",
-        "updatedAt",
-      ]),
+      user: {
+        ..._.omit(updatedUser.toObject(), [
+          "password",
+          "__v",
+          "createdAt",
+          "updatedAt",
+        ]),
+        role: updatedUser.role,
+        school: updatedUser.school,
+        classname: updatedUser.classname,
+      },
     });
   } catch (error) {
     next(error);
@@ -344,8 +364,6 @@ export const forgotPassword: RequestHandler = async (req, res, next) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) throw new HttpError(400, "User not found");
-
-  
 
     // Genete a new token
     const resetToken = user.generateResetToken();
@@ -380,12 +398,59 @@ export const forgotPassword: RequestHandler = async (req, res, next) => {
       );
     }
 
+    // Include the resetToken in the success response
     res.status(200).json({
       message: "Reset token generated successfully. Please check your email.",
       email: user.email,
+      token: resetToken,
     });
   } catch (error) {
     console.error("Error in forgotPassword:", error);
+    next(error);
+  }
+};
+
+export const verifyOtp: RequestHandler = async (req, res, next) => {
+  const verificationValidationSchema = Joi.object({
+    email: Joi.string().email().required(),
+    otp: Joi.string().length(6).required(),
+    token: Joi.string().optional(),
+  });
+
+  try {
+    const { error } = verificationValidationSchema.validate(req.body);
+    if (error) return next(new HttpError(400, error.details[0].message));
+
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      // Even if user not found, return a generic error for security reasons
+      return next(new HttpError(400, "Invalid verification code"));
+    }
+
+    // Hash the provided OTP to compare with the stored hashed token
+    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+    // Check if the hashed token matches and is not expired
+    if (!user.resetPasswordToken || hashedOtp !== user.resetPasswordToken || user.resetPasswordExpires!.getTime() < Date.now()) {
+       // Clear the token if it's invalid or expired
+      user.resetPasswordToken = null;
+      user.resetPasswordExpires = null;
+      await user.save({ validateBeforeSave: false });
+      return next(new HttpError(400, "Invalid or expired verification code"));
+    }
+
+    // If verification is successful, we can send a success response.
+    // The frontend will then navigate to the NewPassword screen.
+    res.status(200).json({
+      message: "OTP verified successfully.",
+      email: user.email, // Optionally return email for the next step
+    });
+
+  } catch (error) {
+    console.error("Error in verifyOtp:", error);
     next(error);
   }
 };

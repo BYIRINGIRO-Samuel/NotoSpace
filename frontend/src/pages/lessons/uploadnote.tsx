@@ -1,28 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import Topbar from '../../components/Topbar';
 import Teacherleftsidebar from '../../components/teacherleftsidebar';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 interface NoteUpload {
   title: string;
   description: string;
-  class: string;
+  className: string;
+  courseName: string;
   file: File | null;
 }
 
+interface Class {
+  _id: string;
+  name: string;
+  courses: Course[];
+}
 
+interface Course {
+  _id: string;
+  name: string;
+}
 
 const UploadNote = () => {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [courses, setCourses] = useState<Course[]>([]);
   const [noteData, setNoteData] = useState<NoteUpload>({
     title: '',
     description: '',
-    class: '',
+    className: '',
+    courseName: '',
     file: null,
   });
+
+  // Fetch teacher's classes and courses
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await axios.get('/api/users/teachers/list/classes', { withCredentials: true });
+        if (response.status === 200 && Array.isArray(response.data.classes)) {
+          setClasses(response.data.classes);
+        }
+      } catch (error) {
+        console.error('Failed to fetch classes:', error);
+        toast.error('Failed to fetch classes');
+      }
+    };
+    fetchClasses();
+  }, []);
+
+  const handleClassChange = (classId: string) => {
+    setSelectedClass(classId);
+    const selectedClassData = classes.find(cls => cls._id === classId);
+    if (selectedClassData) {
+      setCourses(selectedClassData.courses || []);
+      setNoteData(prev => ({ ...prev, className: selectedClassData.name, courseName: '' }));
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,7 +86,7 @@ const UploadNote = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!noteData.file || !noteData.title || !noteData.class) {
+    if (!noteData.file || !noteData.title || !noteData.className || !noteData.courseName) {
       toast.error('Please fill in all required fields and select a document');
       return;
     }
@@ -57,15 +96,27 @@ const UploadNote = () => {
       const formData = new FormData();
       formData.append('title', noteData.title);
       formData.append('description', noteData.description);
-      formData.append('class', noteData.class);
-      formData.append('note', noteData.file);
+      formData.append('className', noteData.className);
+      formData.append('courseName', noteData.courseName);
+      formData.append('file', noteData.file);
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Note uploaded successfully!');
-      setNoteData({ title: '', description: '', class: '', file: null });
-    } catch (error) {
-      toast.error('Failed to upload note. Please try again.');
+      const response = await axios.post('/api/notes/create', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 201) {
+        toast.success('Note uploaded successfully!');
+        setNoteData({ title: '', description: '', className: '', courseName: '', file: null });
+        setSelectedClass('');
+        setCourses([]);
+        navigate('/teacherdashboard/lessons/uploadnotes');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to upload note. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setUploading(false);
     }
@@ -104,7 +155,7 @@ const UploadNote = () => {
 
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 hide-scrollbar">
-        <button 
+          <button 
             onClick={() => navigate('/teacherdashboard/lessons/uploadnotes')}
             className="mb-4 hover:opacity-80 transition-opacity"
           >
@@ -136,17 +187,43 @@ const UploadNote = () => {
 
                 <div className="space-y-2">
                   <label htmlFor="class" className="block text-sm font-medium text-gray-700">
-                    Note Class *
+                    Class *
                   </label>
-                  <input
+                  <select
                     id="class"
-                    type="text"
-                    value={noteData.class}
-                    onChange={(e) => setNoteData(prev => ({ ...prev, class: e.target.value }))}
-                    placeholder="Enter the class to share the note"
+                    value={selectedClass}
+                    onChange={(e) => handleClassChange(e.target.value)}
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+                  >
+                    <option value="">Select a class</option>
+                    {classes.map((cls) => (
+                      <option key={cls._id} value={cls._id}>
+                        {cls.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="course" className="block text-sm font-medium text-gray-700">
+                    Course *
+                  </label>
+                  <select
+                    id="course"
+                    value={noteData.courseName}
+                    onChange={(e) => setNoteData(prev => ({ ...prev, courseName: e.target.value }))}
+                    required
+                    disabled={!selectedClass}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  >
+                    <option value="">Select a course</option>
+                    {courses.map((course) => (
+                      <option key={course._id} value={course.name}>
+                        {course.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-2">

@@ -1,19 +1,24 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface EnterOTPProps {
   onBack: () => void;
   email?: string;
   onOTPVerified: () => void;
+  resetToken: string;
 }
 
 const EnterOTP: React.FC<EnterOTPProps> = ({
   onBack,
   email = "your email",
   onOTPVerified,
+  resetToken,
 }) => {
   const inputs = Array.from({ length: 6 }, () =>
     useRef<HTMLInputElement>(null)
   );
+  const [loading, setLoading] = useState(false);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     const value = e.target.value;
@@ -25,11 +30,56 @@ const EnterOTP: React.FC<EnterOTPProps> = ({
     }
   };
 
-  // Placeholder for OTP verification logic
-  const handleVerifyOTP = () => {
-    // In a real application, you would verify the entered OTP here.
-    // If verification is successful, call onOTPVerified.
-    onOTPVerified();
+  const handleVerifyOTP = async () => {
+    const otp = inputs.map(input => input.current?.value).join('');
+    if (otp.length !== 6) {
+      toast.error('Please enter all 6 digits of the verification code');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post('/api/users/verify-otp', {
+        email,
+        otp,
+        token: resetToken,
+      });
+
+      if (response.status === 200) {
+        toast.success('Verification successful');
+        onOTPVerified();
+      }
+    } catch (error: any) {
+      console.error('Error verifying OTP:', error);
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const errorMessage = error.response?.data?.message;
+
+        switch (status) {
+          case 400:
+            if (errorMessage?.includes('invalid')) {
+              toast.error('Invalid verification code. Please try again');
+            } else if (errorMessage?.includes('expired')) {
+              toast.error('Verification code has expired. Please request a new one');
+            } else {
+              toast.error(errorMessage || 'Invalid verification code');
+            }
+            break;
+          case 429:
+            toast.error('Too many attempts. Please try again later');
+            break;
+          case 500:
+            toast.error('Failed to verify code. Please try again later');
+            break;
+          default:
+            toast.error(errorMessage || 'Failed to verify code');
+        }
+      } else {
+        toast.error('Network error. Please check your internet connection');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,17 +110,18 @@ const EnterOTP: React.FC<EnterOTPProps> = ({
         ))}
       </div>
       <button
-        className="w-full py-3 rounded-lg bg-[#1DA1F2] text-white font-semibold text-lg mb-4 hover:bg-[#1991DA] transition"
+        className="w-full py-3 rounded-lg bg-[#1DA1F2] text-white font-semibold text-lg mb-4 hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handleVerifyOTP}
+        disabled={loading}
       >
-        Reset Password
+        {loading ? 'Verifying...' : 'Reset Password'}
       </button>
       <div className="flex items-center w-full mb-4">
         <div className="flex-1 h-px bg-gray-200" />
         <span className="mx-2 text-gray-400 text-sm">or</span>
         <div className="flex-1 h-px bg-gray-200" />
       </div>
-      <button className="py-3 flex items-center justify-center gap-2 border border-gray-200 bg-gray-300 rounded-[10px]  hover:bg-gray-400 transition w-full">
+      <button className="py-3 flex items-center justify-center gap-2 border border-gray-200 bg-gray-300 rounded-[10px] hover:bg-gray-400 transition w-full">
         <img src="/assets/icons/google.svg" alt="google" className="w-7 h-7" />
         Google
       </button>

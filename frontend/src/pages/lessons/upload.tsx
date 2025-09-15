@@ -1,25 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import Topbar from '../../components/Topbar';
 import Teacherleftsidebar from '../../components/teacherleftsidebar';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface VideoUpload {
   title: string;
   description: string;
-  class: string;
+  className: string;
+  courseName: string;
   file: File | null;
+}
+
+interface Class {
+  _id: string;
+  name: string;
+  courses: Course[];
+}
+
+interface Course {
+  _id: string;
+  name: string;
 }
 
 const Upload = () => {
   const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [courses, setCourses] = useState<Course[]>([]);
   const [videoData, setVideoData] = useState<VideoUpload>({
     title: '',
     description: '',
-    class: '',
+    className: '',
+    courseName: '',
     file: null,
   });
+
+  // Fetch teacher's classes and courses
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await axios.get('/api/users/teachers/list/classes', { withCredentials: true });
+        if (response.status === 200 && Array.isArray(response.data.classes)) {
+          setClasses(response.data.classes);
+        }
+      } catch (error) {
+        console.error('Failed to fetch classes:', error);
+        toast.error('Failed to fetch classes');
+      }
+    };
+    fetchClasses();
+  }, []);
+
+  const handleClassChange = (classId: string) => {
+    setSelectedClass(classId);
+    const selectedClassData = classes.find(cls => cls._id === classId);
+    if (selectedClassData) {
+      setCourses(selectedClassData.courses || []);
+      setVideoData(prev => ({ ...prev, className: selectedClassData.name, courseName: '' }));
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,7 +76,7 @@ const Upload = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!videoData.file || !videoData.title || !videoData.class) {
+    if (!videoData.file || !videoData.title || !videoData.className || !videoData.courseName) {
       toast.error('Please fill in all required fields and select a video');
       return;
     }
@@ -44,15 +86,27 @@ const Upload = () => {
       const formData = new FormData();
       formData.append('title', videoData.title);
       formData.append('description', videoData.description);
-      formData.append('class', videoData.class);
-      formData.append('video', videoData.file);
+      formData.append('className', videoData.className);
+      formData.append('courseName', videoData.courseName);
+      formData.append('file', videoData.file);
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Video uploaded successfully!');
-      setVideoData({ title: '', description: '', class: '', file: null });
-    } catch (error) {
-      toast.error('Failed to upload video. Please try again.');
+      const response = await axios.post('/api/videos/create', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 201) {
+        toast.success('Video uploaded successfully!');
+        setVideoData({ title: '', description: '', className: '', courseName: '', file: null });
+        setSelectedClass('');
+        setCourses([]);
+        navigate('/teacherdashboard/lessons/uploadvideos');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to upload video. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setUploading(false);
     }
@@ -118,17 +172,43 @@ const Upload = () => {
 
                 <div className="space-y-2">
                   <label htmlFor="class" className="block text-sm font-medium text-gray-700">
-                    Video Class *
+                    Class *
                   </label>
-                  <input
+                  <select
                     id="class"
-                    type="text"
-                    value={videoData.class}
-                    onChange={(e) => setVideoData(prev => ({ ...prev, class: e.target.value }))}
-                    placeholder="Enter the class to share the video"
+                    value={selectedClass}
+                    onChange={(e) => handleClassChange(e.target.value)}
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+                  >
+                    <option value="">Select a class</option>
+                    {classes.map((cls) => (
+                      <option key={cls._id} value={cls._id}>
+                        {cls.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="course" className="block text-sm font-medium text-gray-700">
+                    Course *
+                  </label>
+                  <select
+                    id="course"
+                    value={videoData.courseName}
+                    onChange={(e) => setVideoData(prev => ({ ...prev, courseName: e.target.value }))}
+                    required
+                    disabled={!selectedClass}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  >
+                    <option value="">Select a course</option>
+                    {courses.map((course) => (
+                      <option key={course._id} value={course.name}>
+                        {course.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-2">

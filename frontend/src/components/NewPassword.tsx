@@ -1,23 +1,92 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 interface NewPasswordProps {
   onBackToLogin: () => void;
+  resetToken: string;
 }
 
-const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin }) => {
+const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin, resetToken }) => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validatePassword = (password: string) => {
+    const errors = [];
+    if (!/[a-z]/.test(password)) errors.push("Password must include at least a lowercase letter");
+    if (!/[A-Z]/.test(password)) errors.push("Password must include at least an uppercase letter");
+    if (!/\d/.test(password)) errors.push("Password must include at least a number");
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) errors.push("Password must include at least a special character");
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle password reset logic here
-    console.log('New Password:', password);
-    console.log('Confirm Password:', confirmPassword);
-    // You would typically call an API here
-    // onSubmit(password);
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match. Please make sure both passwords are identical');
+      return;
+    }
+
+    // Validate password strength
+    const passwordErrors = validatePassword(password);
+    if (passwordErrors.length > 0) {
+      toast.error(passwordErrors[0]);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post('/api/users/reset-password', {
+        token: resetToken,
+        password,
+        confirmPassword
+      });
+
+      if (response.status === 200) {
+        toast.success('Password has been reset successfully');
+        navigate('/');
+      }
+    } catch (error: any) {
+      console.error('Error resetting password:', error);
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const errorMessage = error.response?.data?.message;
+
+        switch (status) {
+          case 400:
+            if (errorMessage?.includes('token')) {
+              toast.error('Reset link has expired. Please request a new password reset');
+            } else if (errorMessage?.includes('password')) {
+              toast.error('Password does not meet the requirements');
+            } else {
+              toast.error(errorMessage || 'Invalid request');
+            }
+            break;
+          case 401:
+            toast.error('Reset link has expired. Please request a new password reset');
+            break;
+          case 429:
+            toast.error('Too many attempts. Please try again later');
+            break;
+          case 500:
+            toast.error('Failed to reset password. Please try again later');
+            break;
+          default:
+            toast.error(errorMessage || 'Failed to reset password');
+        }
+      } else {
+        toast.error('Network error. Please check your internet connection');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,7 +142,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin }) => {
           </button>
         </div>
 
-        <div className="w-full mb-6 relative">
+        <div className="w-full mb-4 relative">
           <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">Confirm password</label>
           <input
             type={showConfirmPassword ? "text" : "password"}
@@ -115,9 +184,10 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin }) => {
 
         <button
           type="submit"
-          className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg hover:bg-[#1991DA] transition mb-6"
+          className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg hover:bg-[#1991DA] transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading}
         >
-          Reset password
+          {loading ? 'Resetting...' : 'Reset password'}
         </button>
       </form>
 

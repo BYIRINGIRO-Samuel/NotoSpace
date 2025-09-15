@@ -16,6 +16,9 @@ import schoolsRoutes from "./routes/schools.routes.js";
 import classesRoutes from "./routes/classes.routes.js";
 import coursesRoutes from "./routes/courses.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
+import notesRoutes from "./routes/notes.routes.js";
+import videosRoutes from "./routes/videos.routes.js";
+import userTeacherRoutes from "./routes/user.teacher.route.js";
 import { decodeJWTMiddleware } from "./middlewares/protectedRoute.middleware.js";
 import {
   cleanupAllSeenNotifications,
@@ -53,6 +56,9 @@ app.use("/api/schools", schoolsRoutes);
 app.use("api/classes", classesRoutes);
 app.use("api/courses", coursesRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/notes", notesRoutes);
+app.use("/api/videos", videosRoutes);
+app.use("/api/users/teachers", userTeacherRoutes);
 
 //last middlewares
 app.use(errorHandler);

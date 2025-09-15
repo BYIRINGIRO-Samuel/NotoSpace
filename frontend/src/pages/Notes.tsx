@@ -1,8 +1,32 @@
+import { useEffect, useState } from 'react';
 import Leftsidebar from "../components/Leftsidebar";
 import Topbar from "../components/Topbar";
 import NotesSection from "../components/cards/NotesSection";
 
+interface User {
+  name: string;
+  email: string;
+  role: {
+    type: string;
+  };
+}
+
 const Notes = () => {
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
   return (
     <div className="flex h-screen w-full overflow-y-auto hide-scrollbar bg-gray-50">
       <div className="hidden md:flex">
@@ -11,7 +35,7 @@ const Notes = () => {
 
       <div className="flex flex-col flex-1 overflow-x-hidden">
         <div className="sticky top-0 z-50">
-          <Topbar />
+          <Topbar userName={user?.name || ''}/>
         </div>
 
         <div className="w-full">

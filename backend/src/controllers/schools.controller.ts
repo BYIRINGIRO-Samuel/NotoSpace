@@ -6,6 +6,22 @@ import { IRequest } from "../middlewares/protectedRoute.middleware.js";
 import mongoose from "mongoose";
 import School from "../models/school.model.js";
 import Class from "../models/classes.model.js";
+import User from "../models/users.model.js";
+
+
+// Custom validation for profile picture
+const validateProfilePicture = (value: string) => {
+  if (!value) return true; // Allow empty values
+  if (value.startsWith('http://') || value.startsWith('https://')) return true;
+  if (value.startsWith('data:image/')) return true;
+  return false;
+};
+
+// Common validation schema for profilePicture
+const profilePictureSchema = Joi.string()
+  .custom(validateProfilePicture, 'profile-picture-validation')
+  .allow("")
+  .optional();
 
 export const createSchool: RequestHandler = async (
   req: IRequest,
@@ -26,18 +42,15 @@ export const createSchool: RequestHandler = async (
       )
       .required(),
     email: Joi.string().email().required(),
-    profilePicture: Joi.string()
-      .uri({
-        allowRelative: false,
-        scheme: ["http", "https", "data:image/"],
-        allowQuerySquareBrackets: true,
-      })
-      .allow("")
-      .optional(),
+    profilePicture: profilePictureSchema,
   });
   try {
+    console.log('Received profilePicture:', req.body.profilePicture);
     const { error } = schoolValidationSchema.validate(req.body);
-    if (error) return next(new HttpError(400, error.details[0].message));
+    if (error) {
+      console.log('Validation error:', error.details[0].message);
+      return next(new HttpError(400, error.details[0].message));
+    }
 
     const { name, classes, email, profilePicture } = req.body;
     const { _id } = req.user!;
@@ -49,8 +62,11 @@ export const createSchool: RequestHandler = async (
       profilePicture,
       schoolAdmin: new mongoose.Types.ObjectId(_id),
     });
+    // Update the admin user's school field after onboarding
+    await User.findByIdAndUpdate(_id, { school: newSchool._id });
     res.status(201).json(newSchool);
   } catch (error) {
+    console.error('Error in createSchool:', error);
     next(error);
   }
 };
@@ -170,14 +186,7 @@ export const updateSchool: RequestHandler = async (
   const updateSchoolSchema = Joi.object({
     name: Joi.string().optional(),
     email: Joi.string().email().optional(),
-    profilePicture: Joi.string()
-      .uri({
-        allowRelative: false,
-        scheme: ["http", "https", "data:image/"],
-        allowQuerySquareBrackets: true,
-      })
-      .allow("")
-      .optional(),
+    profilePicture: profilePictureSchema,
   });
 
   try {

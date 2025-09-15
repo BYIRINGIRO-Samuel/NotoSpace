@@ -1,9 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import TeacherProfileDropdown from './TeacherProfileDropdown';
 import Rightsidebar from './Rightsidebar';
+import MobileMenu from './MobileMenu';
 
 interface TrTopbarProps {
   userName: string;
+}
+
+interface User {
+  name: string;
+  email: string;
+  role: {
+    type: string;
+  };
+  profilePicture?: string;
 }
 
 const TrTopbar: React.FC<TrTopbarProps> = ({ userName }) => {
@@ -12,6 +22,8 @@ const TrTopbar: React.FC<TrTopbarProps> = ({ userName }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [firstName, setFirstName] = useState<string>('');
   const [profilePicture, setProfilePicture] = useState<string | undefined>(undefined);
+  const [userRole, setUserRole] = useState<string>('');
+  const [initials, setInitials] = useState<string>('');
 
   useEffect(() => {
     if (userName) {
@@ -21,13 +33,55 @@ const TrTopbar: React.FC<TrTopbarProps> = ({ userName }) => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
-        const user = JSON.parse(userStr);
+        const user: User = JSON.parse(userStr);
         setProfilePicture(user.profilePicture || undefined);
+        setUserRole(user.role?.type || '');
+        if (user.name) {
+          const names = user.name.split(' ').filter(n => n);
+          if (names.length > 1) {
+            setInitials(names[0][0] + names[names.length - 1][0]);
+          } else if (names.length === 1) {
+            setInitials(names[0][0]);
+          }
+        }
       } catch (error) {
         console.error('Error parsing user data from localStorage:', error);
       }
     }
   }, [userName]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user: User = JSON.parse(userStr);
+          setProfilePicture(user.profilePicture || undefined);
+          setUserRole(user.role?.type || '');
+          if (user.name) {
+            const names = user.name.split(' ').filter(n => n);
+            if (names.length > 1) {
+              setInitials(names[0][0] + names[names.length - 1][0]);
+            } else if (names.length === 1) {
+              setInitials(names[0][0]);
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing user data from localStorage on storage change:', error);
+        }
+      } else {
+        setProfilePicture(undefined);
+        setUserRole('');
+        setInitials('');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -57,8 +111,8 @@ const TrTopbar: React.FC<TrTopbarProps> = ({ userName }) => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center">
-          {/* Add your logo or other content here */}
+        <div className="flex items-center gap-4">
+          <MobileMenu userName={userName} userRole={userRole} />
         </div>
 
         {/* Right side - notifications and profile */}
@@ -97,11 +151,9 @@ const TrTopbar: React.FC<TrTopbarProps> = ({ userName }) => {
                   className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                 />
               ) : (
-                <img
-                  src="/assets/images/notfound.jpg"
-                  alt="Default User Avatar"
-                  className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
-                />
+                <div className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm font-bold">
+                  {initials.toUpperCase()}
+                </div>
               )}
               
               <span className="hidden sm:block text-sm font-medium text-gray-700">{firstName}</span>

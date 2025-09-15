@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Topbar from '../components/Topbar';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import TrTopbar from '../components/TrTopbar';
 import Teacherleftsidebar from '../components/teacherleftsidebar';
 import { toast } from 'react-hot-toast';
 
@@ -16,67 +16,37 @@ interface Student {
 }
 
 const TrManageStudents = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Mock data for students
-  const [students] = useState<Student[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      className: 'Class 10A',
-      joinDate: '2024-01-15',
-      status: 'active',
-      lastActive: '2024-03-20',
-      progress: 85
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      className: 'Class 10B',
-      joinDate: '2024-01-20',
-      status: 'active',
-      lastActive: '2024-03-19',
-      progress: 92
-    },
-    {
-      id: '3',
-      name: 'Mike Johnson',
-      email: 'mike.johnson@example.com',
-      className: 'Class 11A',
-      joinDate: '2024-02-01',
-      status: 'inactive',
-      lastActive: '2024-03-15',
-      progress: 78
-    },
-    {
-      id: '4',
-      name: 'Sarah Williams',
-      email: 'sarah.williams@example.com',
-      className: 'Class 11B',
-      joinDate: '2024-02-10',
-      status: 'active',
-      lastActive: '2024-03-20',
-      progress: 88
-    },
-    {
-      id: '5',
-      name: 'David Brown',
-      email: 'david.brown@example.com',
-      className: 'Class 12A',
-      joinDate: '2024-02-15',
-      status: 'active',
-      lastActive: '2024-03-18',
-      progress: 95
-    }
-  ]);
+  useEffect(() => {
+    setLoading(true);
+    axios.get('/api/users/teachers/list/students-in-school', { withCredentials: true })
+      .then(res => {
+        if (res.status === 200 && Array.isArray(res.data.students)) {
+          setStudents(res.data.students.map((student: any) => ({
+            id: student._id,
+            name: student.name,
+            email: student.email,
+            className: typeof student.classname === 'object' && student.classname !== null ? student.classname.name : student.classname,
+            joinDate: student.createdAt ? new Date(student.createdAt).toLocaleDateString() : '-',
+            status: student.status,
+            lastActive: '-', // You can update this if you have last active info
+            progress: 0 // You can update this if you have progress info
+          })));
+        } else {
+          setStudents([]);
+        }
+      })
+      .catch(() => setStudents([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   // Filter students based on search query, class, and status
   const filteredStudents = students.filter(student => {
@@ -117,18 +87,17 @@ const TrManageStudents = () => {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Sidebar */}
-      <div className="hidden md:block w-72 flex-shrink-0 overflow-y-auto hide-scrollbar">
+    <div className="flex h-screen w-full bg-gray-50 overflow-hidden">
+      <div className="hidden md:block flex-shrink-0 w-72 bg-white shadow-lg">
         <Teacherleftsidebar />
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar userName="Teacher" />
-        <div className="border-b border-gray-200"></div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 bg-white border-b">
+          <TrTopbar userName="Teacher" />
+        </header>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
@@ -286,7 +255,7 @@ const TrManageStudents = () => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* Delete Modal */}

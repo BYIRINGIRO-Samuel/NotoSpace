@@ -1,6 +1,6 @@
 import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Topbar from '../components/Topbar';
+import TrTopbar from '../components/TrTopbar';
 import Teacherleftsidebar from '../components/teacherleftsidebar';
 import { toast } from 'react-hot-toast';
 
@@ -125,18 +125,17 @@ const Uploads = () => {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Sidebar */}
-      <div className="hidden md:block w-72 flex-shrink-0 overflow-y-auto hide-scrollbar">
+    <div className="flex h-screen w-full bg-gray-50 overflow-hidden">
+      <div className="hidden md:block flex-shrink-0 w-72 bg-white shadow-lg">
         <Teacherleftsidebar />
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
-        <div className="border-b border-gray-200"></div>
-
-        <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 bg-white border-b">
+          <TrTopbar userName="Teacher" />
+        </header>
+        
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
@@ -301,7 +300,7 @@ const Uploads = () => {
               )}
             </div>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* Delete Modal */}

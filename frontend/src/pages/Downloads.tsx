@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Topbar from "../components/Topbar";
 import { toast } from "react-hot-toast";
 import Leftsidebar from "../components/Leftsidebar";
@@ -23,11 +23,33 @@ interface Note {
   downloads: number;
 }
 
-const Uploads = () => {
+interface User {
+  name: string;
+  email: string;
+  role: {
+    type: string;
+  };
+}
+
+const Downloads = () => {
   const [activeTab, setActiveTab] = useState<"videos" | "notes">("videos");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Video | Note | null>(null);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
 
   const [videos] = useState<Video[]>([
     {
@@ -127,7 +149,7 @@ const Uploads = () => {
       </div>
 
       <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
+        <Topbar userName={user?.name || ''} />
         <div className="border-b border-gray-200"></div>
 
         <div className="flex-1 overflow-y-auto p-6">
@@ -385,4 +407,4 @@ const Uploads = () => {
   );
 };
 
-export default Uploads;
+export default Downloads;

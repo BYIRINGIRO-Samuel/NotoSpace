@@ -22,16 +22,20 @@ const Signup = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRole = e.target.value;
+    setRole(newRole);
+    setFormData(prev => ({
+      ...prev,
+      school: "",
+      classname: "",
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    if (!/[A-Z]/.test(formData.password)) {
-      setError("Password must include at least one uppercase letter.");
-      setLoading(false);
-      return;
-    }
 
     try {
       const baseData = {
@@ -50,7 +54,6 @@ const Signup = () => {
       } else if (role.toLowerCase() === 'teacher') {
         dataToSend.school = formData.school;
       }
-
       const response = await axios.post("/api/users/create", dataToSend);
       if (response.data) {
         localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -71,11 +74,30 @@ const Signup = () => {
             console.error("Unknown or missing user role type:", userRole);
             navigate("/");
         }
+        toast.success('Account created successfully!');
       }
     } catch (err: any) {
-      console.log(err);
-      setError(err.response?.data?.message || "An error occurred during signup");
-      toast.error(err.response?.data?.message || "An error occurred during signup");
+      console.error('Signup error:', err);
+      if (axios.isAxiosError(err)) {
+        console.log('Backend error response data:', err.response?.data);
+        const errorMessage = err.response?.data?.message || err.response?.data?.error;
+
+        if (errorMessage?.includes('password must include')) {
+          toast.error(errorMessage);
+        } else if (errorMessage?.includes('Email already exists')) {
+          toast.error('Email already exists. Please use a different email or sign in.');
+        } else if (errorMessage?.includes('School not found')) {
+           toast.error('School not found. Please enter a valid school name.');
+        } else if (errorMessage?.includes('Class not found')) {
+           toast.error('Class not found. Please enter a valid class name.');
+        } else if (errorMessage) {
+           toast.error(errorMessage);
+        } else {
+          toast.error('An error occurred during signup');
+        }
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -84,7 +106,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-2">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden">
-        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#1DA1F2] to-[#1877c9] flex-col items-center justify-center p-8 md:rounded-tl-2xl md:rounded-bl-2xl md:rounded-tr-2xl md:rounded-br-2xl">
+        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#1DA1F2] to-[#1877c9] flex-col items-center justify-center p-8 md:rounded-tl-2xl md::rounded-bl-2xl md:rounded-tr-2xl md::rounded-br-2xl">
           <div
             className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 h-72 w-10 bg-white rounded-l-[80px]"
             style={{ zIndex: 2 }}
@@ -153,12 +175,6 @@ const Signup = () => {
             </div>
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -173,7 +189,7 @@ const Signup = () => {
                   name="role"
                   className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8] text-gray-700"
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={handleRoleChange}
                 >
                   <option value="student">Student</option>
                   <option value="teacher">Teacher</option>
@@ -232,6 +248,7 @@ const Signup = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -260,72 +277,73 @@ const Signup = () => {
                   </svg>
                 </button>
               </div>
-              {(role === "student" || role === "teacher") && (
-                <div>
-                  <label
-                    htmlFor="school"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    School Name
-                  </label>
-                  <input
-                    id="school"
-                    name="school"
-                    type="text"
-                    placeholder="Enter your school name"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
-                    value={formData.school}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              )}
-              {role === "student" && (
-                <div>
-                  <label
-                    htmlFor="classname"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Grade/Class
-                  </label>
-                  <input
-                    id="classname"
-                    name="classname"
-                    type="text"
-                    placeholder="e.g., 10th Grade, Class 12"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
-                    value={formData.classname}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              {role.toLowerCase() !== "admin" && (
+                <>
+                  <div>
+                    <label
+                      htmlFor="school"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      School Name
+                    </label>
+                    <input
+                      id="school"
+                      name="school"
+                      type="text"
+                      placeholder="Enter school name"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                      value={formData.school}
+                      onChange={handleChange}
+                      required={role.toLowerCase() !== "admin"}
+                    />
+                  </div>
+                  {role.toLowerCase() === "student" && (
+                    <div>
+                      <label
+                        htmlFor="classname"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Class Name
+                      </label>
+                      <input
+                        id="classname"
+                        name="classname"
+                        type="text"
+                        placeholder="Enter class name"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                        value={formData.classname}
+                        onChange={handleChange}
+                        required={role.toLowerCase() === "student"}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
-
             <button
               type="submit"
+              className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg mt-4 hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
-              className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg mt-6 hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Signing up..." : "Sign Up"}
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
 
           <div className="flex items-center my-4">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="mx-2 text-gray-400 text-sm">Or Continue with</span>
+            <span className="mx-2 text-gray-400 text-sm">
+              Or Continue with
+            </span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
-          <div className="flex gap-4 mb-4">
-            <button className="py-3 flex items-center justify-center gap-2 border border-gray-200 bg-gray-300 rounded-[10px]  hover:bg-gray-400 transition w-full md:w-1/2">
-              <img
-                src="/assets/icons/google.svg"
-                alt="google"
-                className="w-7 h-7"
-              />
+
+          <div className="mb-4">
+            <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 bg-gray-200 rounded-[10px] py-2 hover:bg-gray-300 transition w-full md:w-full">
+              <img src="/assets/icons/google.svg" alt="google" className="w-7 h-7" />
               Google
             </button>
           </div>
+
           <div className="text-center text-sm text-gray-500 mt-4">
             Already have an account?{" "}
             <Link to="/" className="text-[#1DA1F2] hover:underline">

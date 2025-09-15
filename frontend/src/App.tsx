@@ -36,6 +36,7 @@ import TrManageStudents from "./pages/TrManageStudents";
 import ManageStudents from "./pages/ManageStudents";
 import AdminNotifications from "./pages/AdminNotifications";
 import AdminSettings from "./pages/AdminSettings";
+import AdminProfile from "./pages/AdminProfile";
 
 
 const App = () => {
@@ -212,6 +213,11 @@ const App = () => {
         <Route path="/admin/settings" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminSettings/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/admin/profile" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminProfile/>
           </ProtectedRoute>
         }/>
 

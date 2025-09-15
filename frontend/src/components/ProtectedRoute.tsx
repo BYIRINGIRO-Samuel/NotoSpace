@@ -36,6 +36,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
       }
     }
 
+    // Special case: block admin dashboard if onboarding not complete
+    if (
+      userRole === 'admin' &&
+      window.location.pathname === '/admindashboard' &&
+      !user.school
+    ) {
+      return <Navigate to="/adminonboarding" replace />;
+    }
+
     // User is authenticated and has correct role
     return <>{children}</>;
   } catch (error) {

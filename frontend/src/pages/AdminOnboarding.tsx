@@ -239,7 +239,14 @@ const AdminOnboarding = () => {
       
       if (response.status === 201) {
         setSuccess("School setup completed successfully!");
-        navigate("/admindashboard"); 
+        
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          user.school = response.data.school || response.data.createdSchool || true;
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+        navigate("/admindashboard", { replace: true });
       } else {
         setError("Failed to submit school data: Received unexpected status code.");
       }

@@ -76,7 +76,7 @@ const AdminHome = () => {
                         style={{ height: cardsHeight ? `${cardsHeight}px` : 'auto' }}
                     >
                         <img
-                            src="/assets/images/goat.jpg"
+                            src="/assets/images/1.jpg"
                             alt="image"
                             className="w-full h-full object-cover rounded-[10px]"
                         />
@@ -86,7 +86,7 @@ const AdminHome = () => {
                         </div>
                     </div>
 
-                    <div ref={cardsRef}>
+                    <div ref={cardsRef} className="flex-1 min-w-0">
                         <AdminCards />
                     </div>
                 </div>

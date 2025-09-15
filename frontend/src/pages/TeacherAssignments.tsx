@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Topbar from '../components/Topbar';
+import TrTopbar from '../components/TrTopbar';
 import Teacherleftsidebar from '../components/teacherleftsidebar';
 import { toast } from 'react-hot-toast';
 
@@ -158,18 +158,17 @@ const TeacherAssignments = () => {
   });
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Sidebar */}
-      <div className="hidden md:block w-72 flex-shrink-0 overflow-y-auto hide-scrollbar">
+    <div className="flex h-screen w-full bg-gray-50 overflow-hidden">
+      <div className="hidden md:block flex-shrink-0 w-72 bg-white shadow-lg">
         <Teacherleftsidebar />
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
-        <div className="border-b border-gray-200"></div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 bg-white border-b">
+          <TrTopbar userName="Teacher" />
+        </header>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
@@ -275,16 +274,16 @@ const TeacherAssignments = () => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
 
-      {/* Delete Modal */}
-      {showDeleteModal && assignmentToDelete && (
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{assignmentToDelete.title}"? This action cannot be undone.
+              Are you sure you want to delete the assignment "{assignmentToDelete?.title}"?
             </p>
             <div className="flex justify-end gap-4">
               <button

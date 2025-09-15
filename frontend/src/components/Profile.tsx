@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface User {
   _id: string;
@@ -13,6 +14,48 @@ interface User {
   } | null; 
   profilePicture?: string; // Added profilePicture to interface
 }
+
+// Helper function to compress image
+const compressImage = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Convert to JPEG with 0.7 quality
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        resolve(compressedDataUrl);
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+};
 
 const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +89,8 @@ const ProfilePage = () => {
         }
       } catch (error) {
         console.error('Error parsing user data:', error);
+        // Consider showing a toast or error message here if local storage is corrupt
+        toast.error('Failed to load user data from local storage.');
       }
     }
   }, []);
@@ -57,35 +102,29 @@ const ProfilePage = () => {
       name: editableName,
     };
 
-    // Include new password if it's not empty
     if (newPassword) {
-      // Note: Backend updateProfile needs to handle password updates. 
-      // Ensure backend hashes the new password before saving.
-      dataToUpdate.password = newPassword; 
+      dataToUpdate.password = newPassword;
     }
 
-    // Handle profile picture upload
-    if (profilePictureFile) {
-       // Convert file to Data URL and add to dataToUpdate
-       const reader = new FileReader();
-       reader.onloadend = async () => {
-         dataToUpdate.profilePicture = reader.result as string;
-         // Now send the update request with the profile picture Data URL
-         sendUpdateRequest(dataToUpdate);
-       };
-       reader.readAsDataURL(profilePictureFile);
-       // Return here to wait for the FileReader to complete and send the request
-       return;
+    try {
+      if (profilePictureFile) {
+        // Compress the image before sending
+        const compressedImage = await compressImage(profilePictureFile);
+        dataToUpdate.profilePicture = compressedImage;
+      } else if (profilePicturePreview === null && user?.profilePicture) {
+        dataToUpdate.profilePicture = '';
+      }
 
-    } else if (profilePicturePreview === null && user?.profilePicture) {
-      // Case where user had a profile picture but cleared it
-      dataToUpdate.profilePicture = ''; // Send empty string to clear profile picture
-       sendUpdateRequest(dataToUpdate); // Send update request immediately
-       return;
+      // Send the update request
+      await sendUpdateRequest(dataToUpdate);
+    } catch (error) {
+      console.error('Error processing image:', error);
+      // Display specific error message if available, otherwise a generic one
+      const errorMessage = (error as any).message || 'Error processing image. Please try again.';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-
-    // If no new profile picture file is selected and existing wasn't cleared, send update request for other fields
-    sendUpdateRequest(dataToUpdate);
   };
 
   // Helper function to send the actual PUT request
@@ -105,15 +144,25 @@ const ProfilePage = () => {
            setProfilePicturePreview(response.data.user.profilePicture || null);
            setNewPassword(''); // Clear password field after successful update
            setProfilePictureFile(null); // Clear selected file after update
+           toast.success('Profile updated successfully!');
          }
        } catch (error) {
          console.error('Error updating profile:', error);
-         // Handle error
+         // Handle error - display backend message if available
+         if (axios.isAxiosError(error)) {
+           const backendErrorMessage = error.response?.data?.message;
+           const backendError = error.response?.data?.error;
+           const displayMessage = backendErrorMessage || backendError || 'Failed to update profile. Please try again.';
+           toast.error(displayMessage);
+         } else {
+           toast.error('An unexpected error occurred while updating profile.');
+         }
        } finally {
          setIsLoading(false);
        }
      } else {
        console.error("User ID is missing, cannot update profile.");
+       toast.error('User information missing. Please log in again.');
        setIsLoading(false);
      }
   };
@@ -160,7 +209,7 @@ const ProfilePage = () => {
             className="w-24 h-24 rounded-full object-cover"
           />
         ) : (
-          <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 text-4xl font-bold">
+          <div className="w-24 h-24 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-4xl font-bold">
             {initials.toUpperCase()} 
           </div>
         )}
@@ -246,10 +295,22 @@ const ProfilePage = () => {
       <div className="flex justify-end">
         <button
           onClick={handleSaveChanges}
-          className={`px-6 py-2 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring focus:ring-blue-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+          className={`px-6 py-2 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring focus:ring-blue-200 flex items-center gap-2 ${
+            isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+          }`}
           disabled={isLoading}
         >
-          {isLoading ? 'Saving...' : 'Save Changes'}
+          {isLoading ? (
+            <>
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Saving...</span>
+            </>
+          ) : (
+            'Save Changes'
+          )}
         </button>
       </div>
     </div>

@@ -22,15 +22,19 @@ const decodeJWTMiddleware = async (
 
   try {
     const blackListedToken = await BlackListedToken.findOne({ token });
-    if (blackListedToken)
-      throw new HttpError(
-        401,
-        "This session has been logged out. Please log in again.",
-      );
+    if (blackListedToken) {
+      // Clear the invalid token from cookies
+      res.clearCookie("jwt");
+      return next();
+    }
 
     const decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload;
     const userData = await User.findOne({ publicId: decoded.pid });
-    if (!userData) throw new HttpError(401, "Unauthorized");
+    if (!userData) {
+      // Clear the invalid token from cookies
+      res.clearCookie("jwt");
+      return next();
+    }
 
     if (decoded && typeof decoded === "object" && decoded.pid) {
       req.user = {
@@ -45,12 +49,9 @@ const decodeJWTMiddleware = async (
     return next();
   } catch (error) {
     console.log(`Error in decodeJWTMiddleware:`, error);
-    return next(
-      new HttpError(
-        401,
-        "We couldn't verify your login. Please try logging in again.",
-      ),
-    );
+    // Clear the invalid token from cookies and continue without throwing error
+    res.clearCookie("jwt");
+    return next();
   }
 };
 

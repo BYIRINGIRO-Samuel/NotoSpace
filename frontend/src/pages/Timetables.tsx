@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Topbar from '../components/Topbar';
+import TrTopbar from '../components/TrTopbar';
 import Teacherleftsidebar from '../components/teacherleftsidebar';
 import { toast } from 'react-hot-toast';
 
@@ -211,43 +211,44 @@ const Timetables = () => {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Sidebar */}
-      <div className="hidden md:block w-72 flex-shrink-0 overflow-y-auto hide-scrollbar">
+    <div className="flex h-screen w-full bg-gray-50 overflow-hidden">
+      <div className="hidden md:block flex-shrink-0 w-72 bg-white shadow-lg">
         <Teacherleftsidebar />
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar />
-        <div className="border-b border-gray-200"></div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 bg-white border-b">
+          <TrTopbar userName="Teacher" />
+        </header>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-2xl font-bold text-gray-900">Timetables</h1>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setActiveTab('upload')}
-                  className={`px-4 py-2 rounded-lg ${
-                    activeTab === 'upload'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Upload Timetable
-                </button>
-                <button
-                  onClick={() => setActiveTab('create')}
-                  className={`px-4 py-2 rounded-lg ${
-                    activeTab === 'create'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Create Timetable
-                </button>
+              <div className="flex items-center space-x-4">
+                <div className="bg-gray-200 p-1 rounded-lg flex space-x-1">
+                  <button
+                    onClick={() => setActiveTab('upload')}
+                    className={`px-4 py-2 rounded-lg ${
+                      activeTab === 'upload'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Upload Timetable
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('create')}
+                    className={`px-4 py-2 rounded-lg ${
+                      activeTab === 'create'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Create Timetable
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -384,7 +385,7 @@ const Timetables = () => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* Delete Modal */}

@@ -17,8 +17,8 @@ const getNofitications: RequestHandler = async (req: IRequest, res, next) => {
       createdFor: userId,
       seenBy: { $nin: [userId] },
     })
-      .populate("createdBy", "name -_id")
-      .populate("createdFor", "name -_id");
+      .populate("createdBy", "name")
+      .populate("createdFor", "name");
     if (!notifications || notifications.length === 0) {
       res
         .status(404)
