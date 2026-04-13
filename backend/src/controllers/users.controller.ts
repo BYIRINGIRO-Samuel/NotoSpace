@@ -185,7 +185,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
         ..._.omit(savedUser!.toObject(), ["password", "__v", "createdAt", "updatedAt"]),
         role: savedUser!.role,
         school: savedUser!.school, 
-        classname: savedUser!.classname, // Ensure populated classname is included
+        classname: savedUser!.classname,
       },
     });
   } catch (error) {
