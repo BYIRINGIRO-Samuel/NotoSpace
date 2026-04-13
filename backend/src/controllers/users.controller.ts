@@ -176,8 +176,8 @@ export const createUser: RequestHandler = async (req, res, next) => {
     // Populate role and school before sending the response
     const savedUser = await User.findById(newUser._id)
       .populate('role', 'type')
-      .populate('school', 'name _id') // Populate school name and id
-      .populate('classname', 'name _id'); // Populate classname name and id
+      .populate('school', 'name _id') 
+      .populate('classname', 'name _id'); 
 
     res.status(201).json({
       message: "User created successfully",
