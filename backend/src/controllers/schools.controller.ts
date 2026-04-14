@@ -11,7 +11,7 @@ import User from "../models/users.model.js";
 
 // Custom validation for profile picture
 const validateProfilePicture = (value: string) => {
-  if (!value) return true; // Allow empty values
+  if (!value) return true; 
   if (value.startsWith('http://') || value.startsWith('https://')) return true;
   if (value.startsWith('data:image/')) return true;
   return false;
