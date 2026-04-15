@@ -43,7 +43,7 @@ const quizSchema = new Schema({
   ],
   createdBy: {
     type: Schema.Types.ObjectId,
-    ref: "User", //teacher who created the quiz
+    ref: "User", 
   },
   totalMarks: {
     type: Number,
