@@ -1,6 +1,6 @@
 import { HttpError } from "../utils/error.class.js";
 import User from "../models/users.model.js";
-import Notification from "../models/notification.model.js"; // Adjust path to your model
+import Notification from "../models/notification.model.js"; 
 import mongoose from "mongoose";
 
 export async function clearExpiredResetTokens() {
