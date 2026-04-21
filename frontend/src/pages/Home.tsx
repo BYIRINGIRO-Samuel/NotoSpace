@@ -293,45 +293,45 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-24 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-20">
-            <div className="space-y-8">
+      <footer className="py-16 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div className="space-y-6">
                <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-[#349156] rounded-2xl flex items-center justify-center rotate-3 shadow-lg shadow-[#349156]/20">
-                  <GraduationCap className="w-7 h-7 text-white" />
+                <div className="w-10 h-10 bg-[#349156] rounded-xl flex items-center justify-center rotate-3 shadow-lg shadow-[#349156]/20">
+                  <GraduationCap className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-3xl font-black tracking-tighter">NotoSpace</span>
+                <span className="text-2xl font-black tracking-tighter">NotoSpace</span>
                </div>
-               <p className="text-gray-500 text-lg leading-relaxed font-medium">
+               <p className="text-gray-500 text-sm leading-relaxed font-medium">
                   Empowering the next generation of global learners through collaboration.
                </p>
             </div>
             <div>
-               <h4 className="text-xl font-black mb-8 border-b-2 border-[#349156] w-fit">Platform</h4>
-               <ul className="space-y-6 text-gray-500 text-lg font-bold">
+               <h4 className="text-lg font-black mb-6 border-b-2 border-[#349156] w-fit">Platform</h4>
+               <ul className="space-y-4 text-gray-500 text-sm font-bold">
                   <li><a href="#features" className="hover:text-white transition">Features</a></li>
                   <li><a href="#hero" className="hover:text-white transition">Dashboard</a></li>
                   <li><a href="#social-proof" className="hover:text-white transition">Community</a></li>
                </ul>
             </div>
             <div>
-               <h4 className="text-xl font-black mb-8 border-b-2 border-[#349156] w-fit">Support</h4>
-               <ul className="space-y-6 text-gray-500 text-lg font-bold">
+               <h4 className="text-lg font-black mb-6 border-b-2 border-[#349156] w-fit">Support</h4>
+               <ul className="space-y-4 text-gray-500 text-sm font-bold">
                   <li><a href="#faq" className="hover:text-white transition">FAQ</a></li>
                   <li><Link to="#" className="hover:text-white transition">Contact</Link></li>
                   <li><Link to="#" className="hover:text-white transition">Legal</Link></li>
                </ul>
             </div>
             <div>
-               <h4 className="text-xl font-black mb-8 border-b-2 border-[#349156] w-fit">Join Us</h4>
-               <p className="text-gray-500 text-lg mb-6 font-medium">Get the latest updates first.</p>
-               <div className="flex bg-white/5 rounded-2xl p-2 border border-white/10">
-                  <input type="email" placeholder="Email" className="bg-transparent border-none focus:outline-none px-4 text-lg flex-1" />
-                  <button className="px-6 py-3 bg-[#349156] rounded-xl text-md font-black hover:bg-[#2a7a45] transition">Sub</button>
+               <h4 className="text-xl font-black mb-6 border-b-2 border-[#349156] w-fit">Join Us</h4>
+               <p className="text-gray-500 text-sm mb-4 font-medium">Get updates first.</p>
+               <div className="flex bg-white/5 rounded-2xl p-1.5 border border-white/10 overflow-hidden">
+                  <input type="email" placeholder="Email" className="bg-transparent border-none focus:outline-none px-4 text-sm flex-1 min-w-0" />
+                  <button className="px-5 py-2.5 bg-[#349156] rounded-xl text-sm font-black hover:bg-[#2a7a45] transition shrink-0">Sub</button>
                </div>
             </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 mt-32 pt-12 border-t border-white/5 text-center text-gray-600 font-bold">
+        <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-white/5 text-center text-gray-600 font-bold text-xs uppercase tracking-widest">
            &copy; 2026 NotoSpace. Pure Innovation.
         </div>
       </footer>

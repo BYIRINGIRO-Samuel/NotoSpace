@@ -106,7 +106,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-2">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden">
-        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#349156] to-[#1877c9] flex-col items-center justify-center p-8 md:rounded-tl-2xl md::rounded-bl-2xl md:rounded-tr-2xl md::rounded-br-2xl">
+        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#349156] to-[#2a7a45] flex-col items-center justify-center p-8 md:rounded-tl-2xl md::rounded-bl-2xl md:rounded-tr-2xl md::rounded-br-2xl">
           <div
             className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 h-72 w-10 bg-white rounded-l-[80px]"
             style={{ zIndex: 2 }}
