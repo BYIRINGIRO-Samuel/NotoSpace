@@ -15,13 +15,13 @@ const Leftsidebar = () => {
       <div className="flex-1 flex flex-col gap-6 px-6 py-3">
         <Link to="/studentdashboard" className="flex items-center gap-2 mb-8">
           <svg
-            className="w-8 h-8 text-[#1DA1F2]"
+            className="w-8 h-8 text-[#349156]"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             viewBox="0 0 24 24"
           >
-            <path d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z" fill="#1DA1F2" />
+            <path d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z" fill="#349156" />
           </svg>
           <h1 className="text-2xl font-bold text-blue-500">LearnLite</h1>
         </Link>
@@ -43,7 +43,7 @@ const Leftsidebar = () => {
                           : "text-gray-700 hover:bg-blue-400 hover:text-white"
                       } transition w-full text-left ${
                         openDropdown === link.label && !isParentActive
-                          ? "bg-[#F3F7FA] text-[#1DA1F2]"
+                          ? "bg-[#F3F7FA] text-[#349156]"
                           : ""
                       }`}
                       onClick={() => handleDropdown(link.label)}
@@ -128,7 +128,7 @@ const Leftsidebar = () => {
             <br />
             with lifetime membership
           </p>
-          <button className="z-10 px-6 py-2 rounded-full text-white bg-[#1DA1F2] font-semibold text-sm shadow border border-[#E0E7FF] hover:bg-blue-500 transition mb-2">
+          <button className="z-10 px-6 py-2 rounded-full text-white bg-[#349156] font-semibold text-sm shadow border border-[#E0E7FF] hover:bg-blue-500 transition mb-2">
             Get Access
           </button>
           <img

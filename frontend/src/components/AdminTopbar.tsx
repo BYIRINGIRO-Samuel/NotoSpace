@@ -150,7 +150,7 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ userName }) => {
                   className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm font-bold">
+                <div className="w-8 h-8 rounded-full bg-[#349156] flex items-center justify-center text-white text-sm font-bold">
                   {initials.toUpperCase()}
                 </div>
               )}

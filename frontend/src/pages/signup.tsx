@@ -106,7 +106,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-2">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden">
-        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#1DA1F2] to-[#1877c9] flex-col items-center justify-center p-8 md:rounded-tl-2xl md::rounded-bl-2xl md:rounded-tr-2xl md::rounded-br-2xl">
+        <div className="hidden md:flex relative md:w-4/12 bg-gradient-to-b from-[#349156] to-[#1877c9] flex-col items-center justify-center p-8 md:rounded-tl-2xl md::rounded-bl-2xl md:rounded-tr-2xl md::rounded-br-2xl">
           <div
             className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 h-72 w-10 bg-white rounded-l-[80px]"
             style={{ zIndex: 2 }}
@@ -114,7 +114,7 @@ const Signup = () => {
           <div className="flex flex-col items-center justify-center h-full w-full z-10">
             <div className="bg-white rounded-full w-20 h-20 flex items-center justify-center mb-6 shadow-md">
               <svg
-                className="w-12 h-12 text-[#1DA1F2]"
+                className="w-12 h-12 text-[#349156]"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -122,7 +122,7 @@ const Signup = () => {
               >
                 <path
                   d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z"
-                  fill="#1DA1F2"
+                  fill="#349156"
                 />
               </svg>
             </div>
@@ -145,7 +145,7 @@ const Signup = () => {
           <div className="flex justify-center mb-2 md:hidden">
             <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold text-lg">
               <svg
-                className="w-8 h-8 text-[#1DA1F2]"
+                className="w-8 h-8 text-[#349156]"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -153,24 +153,24 @@ const Signup = () => {
               >
                 <path
                   d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z"
-                  fill="#1DA1F2"
+                  fill="#349156"
                 />
               </svg>
             </div>
           </div>
 
-          <h2 className="text-2xl font-semibold text-center mb-6 md:hidden text-[#1DA1F2]">
+          <h2 className="text-2xl font-semibold text-center mb-6 md:hidden text-[#349156]">
             Sign Up
           </h2>
 
           <div className="flex mb-6 border-b border-gray-200">
             <Link
               to="/"
-              className="flex-1 py-2 text-center font-medium text-gray-400 hover:text-[#1DA1F2] transition"
+              className="flex-1 py-2 text-center font-medium text-gray-400 hover:text-[#349156] transition"
             >
               Sign in
             </Link>
-            <div className="flex-1 py-2 text-center font-medium border-b-2 border-[#1DA1F2] text-[#1DA1F2]">
+            <div className="flex-1 py-2 text-center font-medium border-b-2 border-[#349156] text-[#349156]">
               Sign up
             </div>
           </div>
@@ -187,7 +187,7 @@ const Signup = () => {
                 <select
                   id="role"
                   name="role"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8] text-gray-700"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c] text-gray-700"
                   value={role}
                   onChange={handleRoleChange}
                 >
@@ -208,7 +208,7 @@ const Signup = () => {
                   name="name"
                   type="text"
                   placeholder="Enter your name"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c]"
                   value={formData.name}
                   onChange={handleChange}
                   required
@@ -226,7 +226,7 @@ const Signup = () => {
                   name="email"
                   type="email"
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c]"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -244,7 +244,7 @@ const Signup = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8] pr-10"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c] pr-10"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -291,7 +291,7 @@ const Signup = () => {
                       name="school"
                       type="text"
                       placeholder="Enter school name"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c]"
                       value={formData.school}
                       onChange={handleChange}
                       required={role.toLowerCase() !== "admin"}
@@ -310,7 +310,7 @@ const Signup = () => {
                         name="classname"
                         type="text"
                         placeholder="Enter class name"
-                        className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c]"
                         value={formData.classname}
                         onChange={handleChange}
                         required={role.toLowerCase() === "student"}
@@ -322,7 +322,7 @@ const Signup = () => {
             </div>
             <button
               type="submit"
-              className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg mt-4 hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 rounded-[10px] bg-[#349156] text-white font-semibold text-lg mt-4 hover:bg-[#2a7a45] transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? "Signing Up..." : "Sign Up"}
@@ -346,7 +346,7 @@ const Signup = () => {
 
           <div className="text-center text-sm text-gray-500 mt-4">
             Already have an account?{" "}
-            <Link to="/" className="text-[#1DA1F2] hover:underline">
+            <Link to="/" className="text-[#349156] hover:underline">
               Sign in
             </Link>
           </div>

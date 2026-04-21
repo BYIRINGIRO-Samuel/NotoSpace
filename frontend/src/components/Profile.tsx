@@ -209,7 +209,7 @@ const ProfilePage = () => {
             className="w-24 h-24 rounded-full object-cover"
           />
         ) : (
-          <div className="w-24 h-24 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-4xl font-bold">
+          <div className="w-24 h-24 rounded-full bg-[#349156] flex items-center justify-center text-white text-4xl font-bold">
             {initials.toUpperCase()} 
           </div>
         )}

@@ -66,7 +66,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({
       >
         <img src="/assets/icons/back.svg" alt="Back" className="w-7 h-7" />
       </button>
-      <h2 className="text-2xl font-bold mb-2 text-[#1DA1F2] mt-8">
+      <h2 className="text-2xl font-bold mb-2 text-[#349156] mt-8">
         Reset Password
       </h2>
       <p className="text-gray-600 text-center mb-6">
@@ -86,13 +86,13 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8]"
+            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c]"
             placeholder="name@example.com"
           />
         </div>
         <button
           type="submit"
-          className="w-full py-3 rounded-lg bg-[#1DA1F2] text-white font-semibold text-lg hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 rounded-lg bg-[#349156] text-white font-semibold text-lg hover:bg-[#2a7a45] transition disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? 'Sending code...' : 'Send Reset Code'}

@@ -110,7 +110,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin, resetToken }) 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter new password"
-            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8] pr-10"
+            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c] pr-10"
             required
             minLength={8}
           />
@@ -150,7 +150,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin, resetToken }) 
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm new password"
-            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#A8D8F8] pr-10"
+            className="w-full px-4 py-2 border border-gray-200 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#86c49c] pr-10"
             required
             minLength={8}
           />
@@ -184,7 +184,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin, resetToken }) 
 
         <button
           type="submit"
-          className="w-full py-2 rounded-[10px] bg-[#1DA1F2] text-white font-semibold text-lg hover:bg-[#1991DA] transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 rounded-[10px] bg-[#349156] text-white font-semibold text-lg hover:bg-[#2a7a45] transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? 'Resetting...' : 'Reset password'}
@@ -193,7 +193,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({ onBackToLogin, resetToken }) 
 
       <button
         onClick={onBackToLogin}
-        className="flex items-center text-[#1DA1F2] hover:underline"
+        className="flex items-center text-[#349156] hover:underline"
       >
         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round"></path></svg>
         Back to log in

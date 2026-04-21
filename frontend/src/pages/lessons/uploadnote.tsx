@@ -135,13 +135,13 @@ const UploadNote = () => {
         <div className="md:hidden flex items-center p-4 bg-white border-b border-gray-200">
           <div className="flex items-center gap-2">
             <svg
-              className="w-8 h-8 text-[#1DA1F2]"
+              className="w-8 h-8 text-[#349156]"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z" fill="#1DA1F2" />
+              <path d="M3 20.5L21 12 3 3.5v7l12 1.5-12 1.5v7z" fill="#349156" />
             </svg>
             <h1 className="text-xl font-bold text-blue-500">LearnLite</h1>
           </div>

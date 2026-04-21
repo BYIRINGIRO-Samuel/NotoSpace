@@ -90,7 +90,7 @@ const EnterOTP: React.FC<EnterOTPProps> = ({
       >
         <img src="/assets/icons/back.svg" alt="Back" className="w-7 h-7" />
       </button>
-      <h2 className="text-2xl font-bold mb-2 text-[#1DA1F2] mt-8">
+      <h2 className="text-2xl font-bold mb-2 text-[#349156] mt-8">
         Reset Password
       </h2>
       <p className="text-gray-600 text-center mb-10">
@@ -104,13 +104,13 @@ const EnterOTP: React.FC<EnterOTPProps> = ({
             ref={ref}
             type="text"
             maxLength={1}
-            className="w-12 h-12 border border-gray-300 rounded-lg text-center text-xl focus:outline-none focus:border-[#1DA1F2]"
+            className="w-12 h-12 border border-gray-300 rounded-lg text-center text-xl focus:outline-none focus:border-[#349156]"
             onChange={(e) => handleInput(e, idx)}
           />
         ))}
       </div>
       <button
-        className="w-full py-3 rounded-lg bg-[#1DA1F2] text-white font-semibold text-lg mb-4 hover:bg-[#1991DA] transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3 rounded-lg bg-[#349156] text-white font-semibold text-lg mb-4 hover:bg-[#2a7a45] transition disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handleVerifyOTP}
         disabled={loading}
       >

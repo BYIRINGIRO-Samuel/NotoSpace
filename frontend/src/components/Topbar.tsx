@@ -162,7 +162,7 @@ const Topbar: React.FC<TopbarProps> = ({ userName }) => {
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm font-bold">
+                <div className="w-8 h-8 rounded-full bg-[#349156] flex items-center justify-center text-white text-sm font-bold">
                   {initials.toUpperCase()}
                 </div>
               )}
