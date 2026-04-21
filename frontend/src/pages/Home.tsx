@@ -90,101 +90,99 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-[#1DA1F2]/10 rounded-lg">
-              <BookOpen className="w-8 h-8 text-[#1DA1F2]" />
+      {/* Hero Section & Navbar Container */}
+      <section className="relative pt-6 pb-20 overflow-hidden bg-[#f7faf9]">
+        <div className="max-w-7xl mx-auto px-4 relative">
+          
+          {/* Framed Navbar */}
+          <nav className="mt-4 mb-20 bg-white border border-[#1DA1F2]/10 rounded-2xl px-8 py-4 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top duration-700">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-[#1DA1F2]/10 rounded-lg">
+                <BookOpen className="w-6 h-6 text-[#1DA1F2]" />
+              </div>
+              <span className="text-xl font-bold text-gray-800">EduLe</span>
             </div>
-            <span className="text-2xl font-bold text-gray-800">EduLe</span>
-          </div>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-[#1DA1F2] font-medium">Home</Link>
-            <Link to="#" className="text-gray-600 hover:text-[#1DA1F2] transition">All Course</Link>
-            <Link to="#" className="text-gray-600 hover:text-[#1DA1F2] transition">Pages</Link>
-            <Link to="#" className="text-gray-600 hover:text-[#1DA1F2] transition">Blog</Link>
-            <Link to="#" className="text-gray-600 hover:text-[#1DA1F2] transition">Contact</Link>
+            <div className="hidden md:flex items-center gap-10">
+              <Link to="/" className="text-[#1DA1F2] font-semibold text-sm">Home</Link>
+              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#1DA1F2] transition">All Course</Link>
+              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#1DA1F2] transition">Pages</Link>
+              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#1DA1F2] transition">Blog</Link>
+              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#1DA1F2] transition">Contact</Link>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <Link to="/login" className="text-gray-600 font-semibold text-sm hover:text-[#1DA1F2] transition">Sign In</Link>
+              <Link to="/signup" className="px-6 py-2.5 border border-[#1DA1F2]/30 text-[#1DA1F2] rounded-xl font-bold text-sm hover:bg-[#1DA1F2] hover:text-white transition">
+                Sign Up
+              </Link>
+            </div>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="text-gray-700 font-medium hover:text-[#1DA1F2]">Sign In</Link>
-            <Link to="/signup" className="px-6 py-2.5 bg-[#1DA1F2] text-white rounded-full font-semibold hover:bg-[#1991DA] transition shadow-lg shadow-[#1DA1F2]/20">
-              Sign Up
-            </Link>
+          <div className="flex flex-col md:flex-row items-center gap-12 relative pb-10">
+            {/* Left Content */}
+            <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-700">
+              {/* Orange Dots Decoration */}
+              <div className="absolute top-0 -left-10 opacity-30">
+                 <div className="grid grid-cols-4 gap-2">
+                   {[...Array(12)].map((_, i) => (
+                     <div key={i} className="w-2 h-1 bg-orange-400 rounded-full rotate-45" />
+                   ))}
+                 </div>
+              </div>
+
+              <div className="space-y-6">
+                <span className="text-[#1DA1F2] font-bold tracking-widest uppercase text-xs opacity-70">Start your journey</span>
+                <h1 className="text-4xl md:text-7xl font-extrabold leading-tight text-gray-900">
+                  Sharpen Your <br />
+                  <span className="text-[#1DA1F2] relative">
+                    Success
+                    <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                      <path d="M0 7C30 7 70 2 100 2" stroke="#1DA1F2" strokeWidth="4" fill="none" strokeLinecap="round" />
+                    </svg>
+                  </span> with <br />
+                  NotoSpace.
+                </h1>
+                <p className="text-xl text-gray-500 max-w-md leading-relaxed font-light">
+                  The ultimate digital workspace for your notes, assignments, and collaborative learning.
+                </p>
+              </div>
+
+              <div className="pt-4">
+                <button className="px-10 py-4 bg-[#1DA1F2] text-white rounded-xl font-bold text-lg hover:bg-[#1991DA] transition shadow-xl shadow-[#1DA1F2]/30 flex items-center gap-2 group">
+                  Get Started Now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="flex-1 relative animate-in fade-in slide-in-from-right duration-700">
+              <div className="relative z-10">
+                <img 
+                  src="/hero.png" 
+                  alt="Student" 
+                  className="w-full h-auto object-contain scale-110"
+                />
+              </div>
+
+              {/* Arrows Decoration */}
+              <div className="absolute top-1/4 left-0 text-[#1DA1F2] opacity-20 z-0">
+                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                   <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+                   <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                 </svg>
+              </div>
+              <div className="absolute bottom-1/4 right-0 text-[#1DA1F2] opacity-20 z-0">
+                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="rotate-90">
+                   <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+                   <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                 </svg>
+              </div>
+
+              {/* Subtle glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-white/50 rounded-full blur-3xl -z-10" />
+            </div>
           </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12 relative">
-          
-          {/* Left Content */}
-          <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-700">
-            {/* Orange Dots Decoration */}
-            <div className="absolute top-0 -left-10 opacity-40">
-               <div className="grid grid-cols-4 gap-2">
-                 {[...Array(12)].map((_, i) => (
-                   <div key={i} className="w-2 h-1 bg-orange-400 rounded-full rotate-45" />
-                 ))}
-               </div>
-            </div>
-
-            <div className="space-y-6">
-              <span className="text-[#1DA1F2] font-semibold tracking-widest uppercase text-sm">Start your journey</span>
-              <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-gray-900">
-                Sharpen Your <br />
-                <span className="text-[#1DA1F2] relative">
-                  Success
-                  <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
-                    <path d="M0 7C30 7 70 2 100 2" stroke="#1DA1F2" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  </svg>
-                </span> with <br />
-                NotoSpace.
-              </h1>
-              <p className="text-xl text-gray-500 max-w-md leading-relaxed font-light">
-                The ultimate digital workspace for your notes, assignments, and collaborative learning.
-              </p>
-            </div>
-
-            <div className="pt-4">
-              <button className="px-10 py-4 bg-[#1DA1F2] text-white rounded-xl font-bold text-lg hover:bg-[#1991DA] transition shadow-xl shadow-[#1DA1F2]/30 flex items-center gap-2 group">
-                Get Started Now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-
-          {/* Right Image */}
-          <div className="flex-1 relative animate-in fade-in slide-in-from-right duration-700">
-            {/* Main Student Image */}
-            <div className="relative z-10">
-              <img 
-                src="/hero.png" 
-                alt="Student" 
-                className="w-full h-auto object-contain scale-110"
-              />
-            </div>
-
-            {/* Arrows Decoration (Keep these as they look premium and are in the image) */}
-            <div className="absolute top-1/4 left-0 text-[#1DA1F2] opacity-30 z-0">
-               <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                 <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
-                 <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-               </svg>
-            </div>
-            <div className="absolute bottom-1/4 right-0 text-[#1DA1F2] opacity-30 z-0">
-               <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="rotate-90">
-                 <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
-                 <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-               </svg>
-            </div>
-
-            {/* Subtle glow (white on white, so very subtle shadow/glow) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[#1DA1F2]/5 rounded-full blur-3xl -z-10" />
-          </div>
-
         </div>
       </section>
 
