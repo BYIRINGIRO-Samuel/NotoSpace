@@ -48,35 +48,36 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white font-poppins text-gray-900">
       
-      {/* Hero Section & Integrated Navbar */}
-      <section className="relative pt-6 pb-20 overflow-hidden bg-[#f7faf9]">
+      {/* Fixed Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-6 pointer-events-none">
+        <nav className="max-w-7xl w-full bg-white/70 backdrop-blur-md border border-[#349156]/10 rounded-2xl px-8 py-5 flex items-center justify-between shadow-sm pointer-events-auto animate-in fade-in slide-in-from-top duration-700">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-[#349156]/10 rounded-lg">
+              <GraduationCap className="w-6 h-6 text-[#349156]" />
+            </div>
+            <span className="text-xl font-bold text-gray-800 tracking-tight">NotoSpace</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-10">
+            <a href="#hero" className="text-[#349156] font-semibold text-sm">Home</a>
+            <a href="#features" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Features</a>
+            <a href="#social-proof" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Community</a>
+            <a href="#faq" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Q&A</a>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <Link to="/login" className="text-gray-600 font-semibold text-sm hover:text-[#349156] transition">Sign In</Link>
+            <Link to="/signup" className="px-6 py-2.5 border border-[#349156]/30 text-[#349156] rounded-xl font-bold text-sm hover:bg-[#349156] hover:text-white transition shadow-sm">
+              Join Now
+            </Link>
+          </div>
+        </nav>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative pt-28 pb-20 overflow-hidden bg-[#f7faf9]">
         <div className="max-w-7xl mx-auto px-4 relative">
           
-          {/* Framed Navbar - Integrated with minimal bottom space */}
-          <nav className="bg-white border border-[#349156]/10 rounded-2xl px-8 py-5 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top duration-700">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-[#349156]/10 rounded-lg">
-                <BookOpen className="w-6 h-6 text-[#349156]" />
-              </div>
-              <span className="text-xl font-bold text-gray-800 tracking-tight">NotoSpace</span>
-            </div>
-
-            <div className="hidden md:flex items-center gap-10">
-              <a href="#hero" className="text-[#349156] font-semibold text-sm">Home</a>
-              <a href="#features" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Features</a>
-              <a href="#social-proof" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Community</a>
-              <a href="#faq" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Q&A</a>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <Link to="/login" className="text-gray-600 font-semibold text-sm hover:text-[#349156] transition">Sign In</Link>
-              <Link to="/signup" className="px-6 py-2.5 border border-[#349156]/30 text-[#349156] rounded-xl font-bold text-sm hover:bg-[#349156] hover:text-white transition shadow-sm">
-                Join Now
-              </Link>
-            </div>
-          </nav>
-
-          {/* Reduced space under navbar (approx 5px conceptually via very small mt on content) */}
           <div id="hero" className="flex flex-col md:flex-row items-center gap-12 relative pt-[5px] pb-10">
             {/* Left Content */}
             <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-700">
@@ -234,7 +235,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="space-y-6">
                <div className="flex items-center gap-2">
-                <BookOpen className="w-8 h-8 text-[#349156]" />
+                <GraduationCap className="w-8 h-8 text-[#349156]" />
                 <span className="text-2xl font-bold tracking-tight">NotoSpace</span>
                </div>
                <p className="text-gray-400 text-sm leading-relaxed">
