@@ -73,7 +73,7 @@ const Home = () => {
   const partners = ["Stanford University", "MIT", "Oxford", "Harvard", "Cambridge"];
 
   return (
-    <div className="min-h-screen bg-white font-poppins text-gray-900 overflow-x-hidden scroll-smooth">
+    <div className="min-h-screen bg-white font-poppins text-gray-900 overflow-x-hidden">
       
       {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-6 pointer-events-none">
@@ -88,7 +88,7 @@ const Home = () => {
           <div className="hidden md:flex items-center gap-10">
             <a href="#hero" className="group relative text-[#349156] font-bold text-sm tracking-tight overflow-hidden py-1">
               Home
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform origin-left transition-transform duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform scale-x-100 origin-left transition-transform duration-300"></span>
             </a>
             <a href="#features" className="group relative text-gray-500 font-semibold text-sm hover:text-[#349156] transition-colors py-1">
               Features
@@ -161,6 +161,7 @@ const Home = () => {
                 />
               </div>
               
+              {/* Note Shared Tag */}
               <div className="absolute top-10 right-[-10px] bg-white p-4 rounded-2xl shadow-2xl z-20 animate-bounce max-w-[180px] border border-gray-50" style={{ animationDuration: '4s' }}>
                 <div className="font-black text-lg text-gray-900 flex items-center gap-2 tracking-tight">
                   <div className="w-2 h-2 bg-[#349156] rounded-full animate-pulse" />
@@ -169,6 +170,7 @@ const Home = () => {
                 <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white rotate-45 border-r border-b border-gray-50" />
               </div>
 
+              {/* Resource Added Tag */}
               <div className="absolute bottom-32 right-[20px] bg-gray-900 p-4 rounded-2xl shadow-2xl z-20 animate-bounce delay-700 border border-gray-800" style={{ animationDuration: '5s' }}>
                 <div className="font-bold text-white text-sm flex items-center gap-2">
                   <BookOpen className="w-3 h-3" />
@@ -177,8 +179,12 @@ const Home = () => {
                 <div className="absolute -top-2 left-6 w-4 h-4 bg-gray-900 rotate-45" />
               </div>
 
+              {/* Floating Collaborators List */}
               <div className="absolute bottom-10 left-[-20px] bg-white/95 backdrop-blur-md p-4 rounded-3xl shadow-2xl z-20 border border-gray-100 space-y-4 animate-in slide-in-from-bottom duration-1000">
-                 <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">Collaborators</span>
+                 <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-3 h-3 text-[#349156]" />
+                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block">Collaborators</span>
+                 </div>
                  <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-sm">
                        <img src="https://i.pravatar.cc/100?img=32" alt="User" />
@@ -205,12 +211,24 @@ const Home = () => {
       <section id="social-proof" className="py-24 border-y border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.5em] mb-4">Trusted Worldwide</h2>
-            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale">
+            <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.5em] mb-8">Trusted Worldwide</h2>
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24">
               {partners.map(p => (
-                <span key={p} className="text-2xl font-black text-gray-900">{p}</span>
+                <span key={p} className="text-2xl font-black text-[#349156]/60 hover:text-[#349156] transition-colors cursor-default">{p}</span>
               ))}
             </div>
+          </div>
+          <div className="flex justify-center mt-12">
+             <div className="bg-gray-100/50 px-8 py-4 rounded-full flex items-center gap-6 border border-gray-200 shadow-sm">
+                <div className="flex -space-x-3">
+                   {[1,2,3,4,5].map(i => (
+                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden shadow-sm">
+                        <img src={`https://i.pravatar.cc/100?img=${i+30}`} alt="User" />
+                     </div>
+                   ))}
+                </div>
+                <span className="text-sm font-bold text-gray-500">Join over <span className="text-gray-900 border-b-2 border-[#349156]">50,000+</span> active learners</span>
+             </div>
           </div>
         </div>
       </section>
