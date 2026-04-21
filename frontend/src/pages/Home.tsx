@@ -1,128 +1,85 @@
-import React from 'react';
-import { Search, ChevronLeft, ChevronRight, BookOpen, Clock, Users, Star, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, ChevronDown, ChevronUp, BookOpen, Clock, Users, Star, ArrowRight, Shield, Zap, Sparkles, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const categories = [
-    'UI/UX Design', 'Development', 'Data Science', 'Business', 'Financial'
-  ];
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const courses = [
+  const features = [
     {
-      id: 1,
-      title: 'Data Science and Machine Learning with Python - Hands On!',
-      author: 'Jason Williams',
-      category: 'Science',
-      price: '$385.00',
-      oldPrice: '$440.00',
-      duration: '08 hr 15 mins',
-      lectures: '29 Lectures',
-      rating: 4.9,
-      reviews: 8,
-      image: '/courses.png'
+      title: 'Smart Note Organization',
+      description: 'Automatically categorize and tag your notes with our AI-powered organization system.',
+      icon: <Sparkles className="w-6 h-6 text-[#349156]" />
     },
     {
-      id: 2,
-      title: 'Create Amazing Color Schemes for Your UX Design Projects',
-      author: 'Pamela Rossi',
-      category: 'Science',
-      price: '$420.00',
-      oldPrice: '',
-      duration: '06 hr 30 mins',
-      lectures: '25 Lectures',
-      rating: 4.8,
-      reviews: 12,
-      image: '/courses.png'
+      title: 'Real-time Collaboration',
+      description: 'Work together with classmates on shared assignments and projects in real-time.',
+      icon: <Users className="w-6 h-6 text-[#349156]" />
     },
     {
-      id: 3,
-      title: 'Culture & Leadership: Strategies for a Successful Business',
-      author: 'Rose Simmons',
-      category: 'Science',
-      price: '$235.00',
-      oldPrice: '$340.00',
-      duration: '10 hr 45 mins',
-      lectures: '35 Lectures',
-      rating: 4.9,
-      reviews: 15,
-      image: '/courses.png'
+      title: 'Instant Resource Sharing',
+      description: 'Upload and share PDFs, videos, and study guides with your community instantly.',
+      icon: <BookOpen className="w-6 h-6 text-[#349156]" />
     },
     {
-      id: 4,
-      title: 'Finance Series: Learn to Budget and Calculate your Net Worth',
-      author: 'Jason Williams',
-      category: 'Finance',
-      price: 'Free',
-      oldPrice: '',
-      duration: '04 hr 20 mins',
-      lectures: '18 Lectures',
-      rating: 4.9,
-      reviews: 20,
-      image: '/courses.png'
-    },
-    {
-      id: 5,
-      title: 'Build Brand into Marketing: Tackling the New Marketing Landscape',
-      author: 'Jason Williams',
-      category: 'Marketing',
-      price: '$136.00',
-      oldPrice: '',
-      duration: '12 hr 10 mins',
-      lectures: '42 Lectures',
-      rating: 4.8,
-      reviews: 10,
-      image: '/courses.png'
-    },
-    {
-      id: 6,
-      title: 'Graphic Design: Mastering Badges and Icons with Decorative Shapes',
-      author: 'Jason Williams',
-      category: 'Design',
-      price: '$237.00',
-      oldPrice: '',
-      duration: '09 hr 15 mins',
-      lectures: '28 Lectures',
-      rating: 4.9,
-      reviews: 5,
-      image: '/courses.png'
+      title: 'Secure Progress Tracking',
+      description: 'Monitor your learning journey with end-to-end encrypted progress analytics.',
+      icon: <Shield className="w-6 h-6 text-[#349156]" />
     }
   ];
 
+  const faqs = [
+    {
+      question: "What exactly is NotoSpace?",
+      answer: "NotoSpace is a collaborative digital workspace designed specifically for students and educators. It combines note-taking, file sharing, and project management in one seamless platform."
+    },
+    {
+      question: "Is my data secure on the platform?",
+      answer: "Absolutely. We use industry-standard encryption for all your notes and shared files. Your private study space remains private."
+    },
+    {
+      question: "Can I use NotoSpace for group projects?",
+      answer: "Yes! NotoSpace's core feature is real-time collaboration. You can create shared notebooks and work together with your team synchronously."
+    }
+  ];
+
+  const partners = ["Stanford University", "MIT", "Oxford", "Harvard", "Cambridge"];
+
   return (
     <div className="min-h-screen bg-white font-poppins text-gray-900">
-      {/* Hero Section & Navbar Integrated */}
+      
+      {/* Hero Section & Integrated Navbar */}
       <section className="relative pt-6 pb-20 overflow-hidden bg-[#f7faf9]">
         <div className="max-w-7xl mx-auto px-4 relative">
           
-          {/* Framed Navbar - No top space, integrated into hero */}
+          {/* Framed Navbar - Integrated with minimal bottom space */}
           <nav className="bg-white border border-[#349156]/10 rounded-2xl px-8 py-5 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top duration-700">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-[#349156]/10 rounded-lg">
                 <BookOpen className="w-6 h-6 text-[#349156]" />
               </div>
-              <span className="text-xl font-bold text-gray-800">EduLe</span>
+              <span className="text-xl font-bold text-gray-800 tracking-tight">NotoSpace</span>
             </div>
 
             <div className="hidden md:flex items-center gap-10">
-              <Link to="/" className="text-[#349156] font-semibold text-sm">Home</Link>
-              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">All Course</Link>
-              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Pages</Link>
-              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Blog</Link>
-              <Link to="#" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Contact</Link>
+              <a href="#hero" className="text-[#349156] font-semibold text-sm">Home</a>
+              <a href="#features" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Features</a>
+              <a href="#social-proof" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Community</a>
+              <a href="#faq" className="text-gray-500 font-medium text-sm hover:text-[#349156] transition">Q&A</a>
             </div>
 
             <div className="flex items-center gap-6">
               <Link to="/login" className="text-gray-600 font-semibold text-sm hover:text-[#349156] transition">Sign In</Link>
-              <Link to="/signup" className="px-6 py-2.5 border border-[#349156]/30 text-[#349156] rounded-xl font-bold text-sm hover:bg-[#349156] hover:text-white transition">
-                Sign Up
+              <Link to="/signup" className="px-6 py-2.5 border border-[#349156]/30 text-[#349156] rounded-xl font-bold text-sm hover:bg-[#349156] hover:text-white transition shadow-sm">
+                Join Now
               </Link>
             </div>
           </nav>
 
-          <div className="flex flex-col md:flex-row items-center gap-12 relative pt-20 pb-10">
+          {/* Reduced space under navbar (approx 5px conceptually via very small mt on content) */}
+          <div id="hero" className="flex flex-col md:flex-row items-center gap-12 relative pt-[5px] pb-10">
             {/* Left Content */}
             <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-700">
-              {/* Orange Dots Decoration */}
               <div className="absolute top-10 -left-10 opacity-30">
                  <div className="grid grid-cols-4 gap-2">
                    {[...Array(12)].map((_, i) => (
@@ -131,8 +88,8 @@ const Home = () => {
                  </div>
               </div>
 
-              <div className="space-y-6">
-                <span className="text-[#349156] font-bold tracking-widest uppercase text-xs opacity-70">Start your journey</span>
+              <div className="space-y-6 pt-10">
+                <span className="text-[#349156] font-bold tracking-widest uppercase text-xs opacity-70">Elevate your study game</span>
                 <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-gray-900">
                   Sharpen Your <br />
                   <span className="text-[#349156]">Success</span> with <br />
@@ -144,8 +101,8 @@ const Home = () => {
               </div>
 
               <div className="pt-4">
-                <button className="px-10 py-4 bg-[#349156] text-white rounded-xl font-bold text-lg hover:bg-[#2a7a45] transition shadow-xl shadow-[#349156]/30 flex items-center gap-2 group">
-                  Get Started Now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <button className="px-10 py-5 bg-[#349156] text-white rounded-2xl font-bold text-lg hover:bg-[#2a7a45] transition-all hover:shadow-2xl shadow-xl shadow-[#349156]/30 flex items-center gap-2 group">
+                  Start Learning Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
@@ -155,161 +112,164 @@ const Home = () => {
               <div className="relative z-10">
                 <img 
                   src="/hero.png" 
-                  alt="Student" 
-                  className="w-full h-auto object-contain scale-110"
+                  alt="Student Studying" 
+                  className="w-full h-auto object-contain scale-110 drop-shadow-xl"
                 />
               </div>
-
-              {/* Arrows Decoration */}
+              
               <div className="absolute top-1/4 left-0 text-[#349156] opacity-20 z-0">
                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
                    <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
                    <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                  </svg>
               </div>
-              <div className="absolute bottom-1/4 right-0 text-[#349156] opacity-20 z-0">
-                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="rotate-90">
-                   <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
-                   <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                 </svg>
-              </div>
-
-              {/* Subtle glow */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-white/50 rounded-full blur-3xl -z-10" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Courses Section */}
-      <section className="py-24 max-w-7xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
-          <div>
-            <h2 className="text-4xl font-bold mb-4 flex items-center gap-3">
-              All <span className="text-[#349156] border-b-4 border-[#349156]/20">Courses</span> of EduLe
-            </h2>
+      {/* Social Proof Section */}
+      <section id="social-proof" className="py-20 border-y border-gray-100 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-[0.3em] mb-4">Trusted by students from</h2>
+            <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              {partners.map(p => (
+                <span key={p} className="text-2xl font-bold text-gray-800">{p}</span>
+              ))}
+            </div>
           </div>
-          <div className="flex-1 max-w-xl">
-             <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Search your course" 
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#349156]/50 pr-14"
-                />
-                <button className="absolute right-2 top-2 bottom-2 aspect-square bg-[#349156] text-white rounded-lg flex items-center justify-center hover:bg-[#2a7a45] transition">
-                  <Search className="w-5 h-5" />
-                </button>
+          <div className="flex justify-center mt-12">
+             <div className="bg-[#349156]/5 px-6 py-3 rounded-full flex items-center gap-4 border border-[#349156]/10">
+                <div className="flex -space-x-2">
+                   {[1,2,3,4].map(i => (
+                     <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+                        <img src={`https://i.pravatar.cc/100?img=${i+25}`} alt="User" />
+                     </div>
+                   ))}
+                </div>
+                <span className="text-sm font-semibold text-gray-600">Join over <span className="text-[#349156]">50,000+</span> active learners today</span>
              </div>
           </div>
         </div>
+      </section>
 
-        {/* Category Filters */}
-        <div className="flex items-center gap-4 mb-12 overflow-x-auto pb-4 hide-scrollbar">
-          <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition"><ChevronLeft className="w-5 h-5 text-gray-400" /></button>
-          {categories.map((cat, i) => (
-            <button 
-              key={cat} 
-              className={`px-8 py-3 rounded-full whitespace-nowrap transition-all font-medium ${i === 0 ? 'bg-[#349156] text-white shadow-lg shadow-[#349156]/30' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-            >
-              {cat}
-            </button>
-          ))}
-          <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition"><ChevronRight className="w-5 h-5 text-gray-400" /></button>
-        </div>
-
-        {/* Courses Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course) => (
-            <div key={course.id} className="group bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-              <div className="relative h-60 overflow-hidden">
-                <img 
-                  src={course.image} 
-                  alt={course.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-[#349156]">
-                   {course.category}
-                </div>
-              </div>
-              <div className="p-8 space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
-                    <img src={`https://i.pravatar.cc/100?img=${course.id + 20}`} alt={course.author} />
-                  </div>
-                  <span className="text-sm font-semibold text-gray-700">{course.author}</span>
-                  <div className="ml-auto px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-lg uppercase">Science</div>
-                </div>
-                
-                <h3 className="text-xl font-bold leading-tight group-hover:text-[#349156] transition-colors line-clamp-2">
-                  {course.title}
-                </h3>
-
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-                  <div className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-[#349156]" /> {course.duration}</div>
-                  <div className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-[#349156]" /> {course.lectures}</div>
-                </div>
-
-                <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-[#349156]">{course.price}</span>
-                    {course.oldPrice && <span className="text-sm text-gray-400 line-through">{course.oldPrice}</span>}
-                  </div>
-                  <div className="flex items-center gap-1 font-bold text-sm">
-                    {course.rating} <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  </div>
-                </div>
-              </div>
+      {/* Features Section */}
+      <section id="features" className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
+            <div className="max-w-2xl">
+               <span className="text-[#349156] font-bold text-sm tracking-widest uppercase">Features</span>
+               <h2 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">Everything you need to <span className="text-[#349156]">excel</span> in your studies</h2>
             </div>
-          ))}
-        </div>
+            <p className="text-gray-500 max-w-sm">Built by students, for students. We understand the hurdles of collaborative learning.</p>
+          </div>
 
-        <div className="mt-16 text-center">
-            <button className="px-10 py-4 bg-gray-100 text-gray-900 rounded-full font-bold hover:bg-[#349156] hover:text-white transition shadow-lg flex items-center gap-2 mx-auto">
-                Other Course <ArrowRight className="w-5 h-5" />
-            </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, i) => (
+              <div key={i} className="group p-8 rounded-3xl border border-gray-100 hover:border-[#349156]/20 hover:bg-[#349156]/[0.02] transition-all duration-300">
+                <div className="w-14 h-14 bg-[#349156]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer / CTA mockup */}
-      <section className="py-20 bg-gray-900 text-white">
+      {/* Q&A / FAQ Section */}
+      <section id="faq" className="py-24 bg-[#fcfdfd]">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16">
+             <span className="text-[#349156] font-bold text-sm tracking-widest uppercase">Q&A</span>
+             <h2 className="text-4xl font-extrabold mt-4">Questions? We have answers</h2>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div 
+                key={i} 
+                className={`border bg-white rounded-3xl overflow-hidden transition-all duration-300 ${openFaq === i ? 'border-[#349156] shadow-lg' : 'border-gray-100'}`}
+              >
+                <button 
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full px-8 py-6 flex items-center justify-between text-left"
+                >
+                  <span className="text-lg font-bold text-gray-800">{faq.question}</span>
+                  {openFaq === i ? <ChevronUp className="text-[#349156]" /> : <ChevronDown className="text-gray-400" />}
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-96' : 'max-h-0'}`}>
+                  <div className="px-8 pb-8 text-gray-500 leading-relaxed">
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 max-w-7xl mx-auto px-4">
+         <div className="bg-[#349156] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
+            
+            <div className="relative z-10 space-y-8">
+               <h2 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">Ready to transform how <br /> you learn?</h2>
+               <p className="text-white/80 text-xl max-w-2xl mx-auto">Join NotoSpace today and start building your knowledge base with the best collaborative tools.</p>
+               <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+                  <button className="px-10 py-5 bg-white text-[#349156] rounded-2xl font-bold text-lg hover:bg-gray-50 transition shadow-xl">Get Started for Free</button>
+                  <button className="px-10 py-5 bg-transparent border border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/10 transition">Learn More</button>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-20 bg-gray-900 text-white font-poppins">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="space-y-6">
                <div className="flex items-center gap-2">
                 <BookOpen className="w-8 h-8 text-[#349156]" />
-                <span className="text-2xl font-bold">EduLe</span>
+                <span className="text-2xl font-bold tracking-tight">NotoSpace</span>
                </div>
                <p className="text-gray-400 text-sm leading-relaxed">
-                  Join thousands of learners worldwide and transform your career with the most sought-after skills in today's market.
+                  The complete digital ecosystem for modern students and dedicated educators.
                </p>
             </div>
             <div>
-               <h4 className="text-lg font-bold mb-6">Category</h4>
+               <h4 className="text-lg font-bold mb-6 underline decoration-[#349156] underline-offset-8">Platform</h4>
                <ul className="space-y-4 text-gray-400 text-sm">
-                  <li><Link to="#" className="hover:text-[#349156] transition">Development</Link></li>
-                  <li><Link to="#" className="hover:text-[#349156] transition">Business</Link></li>
-                  <li><Link to="#" className="hover:text-[#349156] transition">Design</Link></li>
-                  <li><Link to="#" className="hover:text-[#349156] transition">Marketing</Link></li>
+                  <li><a href="#features" className="hover:text-[#349156] transition">Features</a></li>
+                  <li><a href="#hero" className="hover:text-[#349156] transition">Note Sharing</a></li>
+                  <li><a href="#social-proof" className="hover:text-[#349156] transition">Collaboration</a></li>
                </ul>
             </div>
             <div>
-               <h4 className="text-lg font-bold mb-6">Quick Links</h4>
+               <h4 className="text-lg font-bold mb-6 underline decoration-[#349156] underline-offset-8">Support</h4>
                <ul className="space-y-4 text-gray-400 text-sm">
-                  <li><Link to="#" className="hover:text-[#349156] transition">About Us</Link></li>
+                  <li><a href="#faq" className="hover:text-[#349156] transition">FAQ</a></li>
                   <li><Link to="#" className="hover:text-[#349156] transition">Contact Us</Link></li>
-                  <li><Link to="#" className="hover:text-[#349156] transition">FAQ</Link></li>
-                  <li><Link to="#" className="hover:text-[#349156] transition">Terms</Link></li>
+                  <li><Link to="#" className="hover:text-[#349156] transition">Privacy Policy</Link></li>
                </ul>
             </div>
             <div>
-               <h4 className="text-lg font-bold mb-6">Subscribe</h4>
-               <p className="text-gray-400 text-sm mb-4">Connect with us and get the latest news</p>
-               <div className="flex bg-white/10 rounded-lg p-1.5">
-                  <input type="email" placeholder="Email.." className="bg-transparent border-none focus:outline-none px-3 text-sm flex-1" />
-                  <button className="px-4 py-2 bg-[#349156] rounded-md text-sm font-bold">Join</button>
+               <h4 className="text-lg font-bold mb-6 underline decoration-[#349156] underline-offset-8">Stay Updated</h4>
+               <p className="text-gray-400 text-sm mb-4">Connect with us for learning tips and updates.</p>
+               <div className="flex bg-white/10 rounded-xl p-1.5 border border-white/10">
+                  <input type="email" placeholder="Your email.." className="bg-transparent border-none focus:outline-none px-3 text-sm flex-1" />
+                  <button className="px-5 py-2.5 bg-[#349156] rounded-lg text-sm font-bold hover:bg-[#2a7a45] transition">Join</button>
                </div>
             </div>
         </div>
-      </section>
+        <div className="max-w-7xl mx-auto px-4 mt-20 pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
+           &copy; 2026 NotoSpace. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 };
