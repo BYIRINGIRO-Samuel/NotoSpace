@@ -118,72 +118,95 @@ const Home = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden bg-[#1DA1F2]/5">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
-          <div className="flex-1 space-y-8 animate-in fade-in slide-in-from-left duration-700">
-            <div className="inline-block px-4 py-1.5 bg-[#1DA1F2]/10 border border-[#1DA1F2]/20 rounded-full">
-              <span className="text-[#1DA1F2] text-sm font-semibold">Start your favourite course</span>
+      <section className="relative pt-32 pb-20 overflow-hidden bg-[#1DA1F2]/10">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12 relative">
+          
+          {/* Left Content */}
+          <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-700">
+            {/* Orange Dots/Grains Decoration */}
+            <div className="absolute top-0 -left-10 opacity-60">
+               <div className="grid grid-cols-4 gap-2">
+                 {[...Array(12)].map((_, i) => (
+                   <div key={i} className="w-2 h-1 bg-orange-400 rounded-full rotate-45" />
+                 ))}
+               </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
-              Now learning from anywhere, and build your <span className="text-[#1DA1F2] relative">
-                bright career.
-                <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
-                  <path d="M0 7C30 7 70 2 100 2" stroke="#1DA1F2" strokeWidth="4" fill="none" strokeLinecap="round" />
-                </svg>
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-lg">
-              Unlock your potential with EduLe. Access thousands of expert-led courses anywhere, anytime. Start your journey today!
-            </p>
-            <div className="flex items-center gap-6 pt-4">
-              <button className="px-8 py-4 bg-[#1DA1F2] text-white rounded-lg font-bold text-lg hover:bg-[#1991DA] transition shadow-xl shadow-[#1DA1F2]/30 flex items-center gap-2 group">
-                Start A Course <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+
+            <div className="space-y-4">
+              <span className="text-[#1DA1F2] font-semibold tracking-wide">Start your favorite journey</span>
+              <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900">
+                Unlock your potential <br />
+                from anywhere, and build <br />
+                your <span className="text-[#1DA1F2] relative">
+                  bright future.
+                  <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                    <path d="M0 7C30 7 70 2 100 2" stroke="#1DA1F2" strokeWidth="4" fill="none" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </h1>
+              <p className="text-lg text-gray-600 max-w-lg leading-relaxed">
+                Connect with mentors, access premium study materials, and track your progress all in one place. NotoSpace is where excellence begins.
+              </p>
+            </div>
+
+            <div className="pt-4">
+              <button className="px-10 py-4 bg-[#1DA1F2] text-white rounded-xl font-bold text-lg hover:bg-[#1991DA] transition shadow-xl shadow-[#1DA1F2]/30 flex items-center gap-2 group">
+                Explore Resources
               </button>
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <div className="text-xl font-bold flex items-center gap-1">4.8 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /></div>
-                  <div className="text-sm text-gray-500">Rating (80k)</div>
-                </div>
-              </div>
             </div>
           </div>
 
+          {/* Right Image & Floating Elements */}
           <div className="flex-1 relative animate-in fade-in slide-in-from-right duration-700">
-            {/* Dots Decoration */}
-            <div className="absolute -top-12 -right-8 w-24 h-24 grid grid-cols-5 gap-2 opacity-20">
-              {[...Array(25)].map((_, i) => (
-                <div key={i} className="w-1.5 h-1.5 bg-[#1DA1F2] rounded-full" />
-              ))}
-            </div>
-            
-            <div className="relative z-10 rounded-3xl overflow-hidden border-8 border-white shadow-2xl">
+            {/* Main Student Image */}
+            <div className="relative z-10">
               <img 
                 src="/hero.png" 
                 alt="Student" 
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-contain scale-110 drop-shadow-2xl"
               />
             </div>
-            {/* Floating elements */}
-            <div className="absolute top-10 -left-10 bg-white p-4 rounded-2xl shadow-xl z-20 flex items-center gap-3 animate-bounce shadow-[#1DA1F2]/10" style={{ animationDuration: '3s' }}>
-              <div className="w-12 h-12 bg-[#1DA1F2] rounded-xl flex items-center justify-center text-white font-bold">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="text-xl font-bold">1,235</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest">Courses</div>
+
+            {/* Floating Circle (Courses) */}
+            <div className="absolute top-1/2 -left-20 -translate-y-1/2 z-20 animate-bounce" style={{ animationDuration: '4s' }}>
+              <div className="w-28 h-28 bg-[#1DA1F2] rounded-full flex flex-col items-center justify-center text-white border-4 border-white shadow-2xl">
+                 <BookOpen className="w-6 h-6 mb-1" />
+                 <span className="text-xl font-bold leading-none">1,235</span>
+                 <span className="text-[10px] uppercase font-bold opacity-80">courses</span>
+                 {/* Circle ripple effect */}
+                 <div className="absolute inset-x-0 -bottom-4 flex justify-center">
+                    <div className="w-16 h-1 bg-[#1DA1F2]/20 rounded-full blur-sm" />
+                 </div>
               </div>
             </div>
-            {/* Decors */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#1DA1F2]/20 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 -left-20 w-40 h-40 bg-blue-100/50 rounded-full blur-3xl" />
+
+            {/* Rating Badge */}
+            <div className="absolute top-10 right-0 bg-white/90 backdrop-blur p-3 rounded-2xl shadow-xl z-20 flex flex-col items-center border border-gray-100">
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-bold">4.8</span>
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              </div>
+              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Rating (85k)</span>
+            </div>
+
+            {/* Arrows Decoration */}
+            <div className="absolute top-1/4 left-0 text-[#1DA1F2] opacity-40 z-0">
+               <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                 <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+                 <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+               </svg>
+            </div>
+            <div className="absolute bottom-1/4 right-0 text-[#1DA1F2] opacity-40 z-0">
+               <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="rotate-90">
+                 <path d="M10 50C25 45 35 25 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+                 <path d="M45 10H50V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+               </svg>
+            </div>
+
+            {/* Background Shape */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/30 rounded-full blur-3xl -z-10" />
           </div>
+
         </div>
       </section>
 
