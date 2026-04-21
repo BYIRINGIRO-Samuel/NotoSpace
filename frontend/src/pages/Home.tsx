@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
-import { Search, ChevronDown, ChevronUp, BookOpen, Clock, Users, Star, ArrowRight, Shield, Zap, Sparkles, GraduationCap, Play, FileText, Globe, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  ChevronDown, 
+  ChevronUp, 
+  BookOpen, 
+  Users, 
+  ArrowRight, 
+  GraduationCap, 
+  Play, 
+  CheckCircle2 
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
@@ -64,7 +73,7 @@ const Home = () => {
   const partners = ["Stanford University", "MIT", "Oxford", "Harvard", "Cambridge"];
 
   return (
-    <div className="min-h-screen bg-white font-poppins text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-white font-poppins text-gray-900 overflow-x-hidden scroll-smooth">
       
       {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-6 pointer-events-none">
@@ -77,10 +86,22 @@ const Home = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-10">
-            <a href="#hero" className="text-[#349156] font-bold text-sm tracking-tight hover:opacity-80">Home</a>
-            <a href="#features" className="text-gray-500 font-semibold text-sm hover:text-[#349156] transition">Features</a>
-            <a href="#social-proof" className="text-gray-500 font-semibold text-sm hover:text-[#349156] transition">Community</a>
-            <a href="#faq" className="text-gray-500 font-semibold text-sm hover:text-[#349156] transition">Q&A</a>
+            <a href="#hero" className="group relative text-[#349156] font-bold text-sm tracking-tight overflow-hidden py-1">
+              Home
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform origin-left transition-transform duration-300"></span>
+            </a>
+            <a href="#features" className="group relative text-gray-500 font-semibold text-sm hover:text-[#349156] transition-colors py-1">
+              Features
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+            </a>
+            <a href="#social-proof" className="group relative text-gray-500 font-semibold text-sm hover:text-[#349156] transition-colors py-1">
+              Community
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+            </a>
+            <a href="#faq" className="group relative text-gray-500 font-semibold text-sm hover:text-[#349156] transition-colors py-1">
+              Q&A
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#349156] transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+            </a>
           </div>
 
           <div className="flex items-center gap-6">
@@ -92,15 +113,14 @@ const Home = () => {
         </nav>
       </div>
 
-      {/* Hero Section - Reduced space under navbar to 5px conceptually */}
-      <section className="relative pt-[92px] pb-32 overflow-hidden bg-white">
-        {/* Background Innovative Shapes */}
+      {/* Hero Section */}
+      <section id="hero" className="relative pt-[92px] pb-32 overflow-hidden bg-white">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#f7faf9] -z-10 rounded-l-[100px] overflow-hidden">
            <div className="absolute top-1/4 right-0 w-96 h-96 bg-[#349156]/5 rounded-full blur-3xl animate-pulse" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 relative pt-[5px]">
-          <div id="hero" className="flex flex-col md:flex-row items-center gap-16 relative">
+          <div className="flex flex-col md:flex-row items-center gap-16 relative">
             
             {/* Left Content */}
             <div className="flex-1 space-y-8 z-10 animate-in fade-in slide-in-from-left duration-1000">
@@ -141,7 +161,6 @@ const Home = () => {
                 />
               </div>
               
-              {/* Note Shared Tag */}
               <div className="absolute top-10 right-[-10px] bg-white p-4 rounded-2xl shadow-2xl z-20 animate-bounce max-w-[180px] border border-gray-50" style={{ animationDuration: '4s' }}>
                 <div className="font-black text-lg text-gray-900 flex items-center gap-2 tracking-tight">
                   <div className="w-2 h-2 bg-[#349156] rounded-full animate-pulse" />
@@ -150,7 +169,6 @@ const Home = () => {
                 <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white rotate-45 border-r border-b border-gray-50" />
               </div>
 
-              {/* Resource Added Tag */}
               <div className="absolute bottom-32 right-[20px] bg-gray-900 p-4 rounded-2xl shadow-2xl z-20 animate-bounce delay-700 border border-gray-800" style={{ animationDuration: '5s' }}>
                 <div className="font-bold text-white text-sm flex items-center gap-2">
                   <BookOpen className="w-3 h-3" />
@@ -159,7 +177,6 @@ const Home = () => {
                 <div className="absolute -top-2 left-6 w-4 h-4 bg-gray-900 rotate-45" />
               </div>
 
-              {/* Floating Collaborators List */}
               <div className="absolute bottom-10 left-[-20px] bg-white/95 backdrop-blur-md p-4 rounded-3xl shadow-2xl z-20 border border-gray-100 space-y-4 animate-in slide-in-from-bottom duration-1000">
                  <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">Collaborators</span>
                  <div className="flex items-center gap-3">
@@ -208,7 +225,6 @@ const Home = () => {
 
           <div className="w-full overflow-x-auto">
              <div className="min-w-[800px]">
-                {/* Table Header */}
                 <div className="grid grid-cols-12 bg-gray-50 border-y border-gray-200 py-6 px-10">
                    <div className="col-span-1 text-xs font-black text-gray-400 uppercase tracking-widest">ID</div>
                    <div className="col-span-4 text-xs font-black text-gray-400 uppercase tracking-widest">Feature Title</div>
@@ -216,7 +232,6 @@ const Home = () => {
                    <div className="col-span-3 text-xs font-black text-gray-400 uppercase tracking-widest">Platform Benefit</div>
                 </div>
 
-                {/* Table Rows */}
                 <div className="divide-y divide-gray-100 border-b border-gray-100">
                    {features.map((feature) => (
                      <div key={feature.id} className="grid grid-cols-12 py-8 px-10 items-center hover:bg-[#349156]/[0.02] transition-colors group">
@@ -279,8 +294,6 @@ const Home = () => {
       <section className="py-32 max-w-7xl mx-auto px-4">
          <div className="bg-[#349156] rounded-[4rem] p-16 md:p-32 text-center relative overflow-hidden shadow-[0_50px_50px_rgba(52,145,86,0.2)]">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px]" />
-            
             <div className="relative z-10 space-y-12">
                <h2 className="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tighter">Start your journey <br /> with excellence.</h2>
                <p className="text-white/80 text-2xl max-w-2xl mx-auto font-medium">Join NotoSpace today and transform how you study forever.</p>
@@ -309,15 +322,27 @@ const Home = () => {
             <div>
                <h4 className="text-lg font-black mb-6 border-b-2 border-[#349156] w-fit">Platform</h4>
                <ul className="space-y-4 text-gray-500 text-sm font-bold">
-                  <li><a href="#features" className="hover:text-white transition">Features</a></li>
-                  <li><a href="#hero" className="hover:text-white transition">Dashboard</a></li>
-                  <li><a href="#social-proof" className="hover:text-white transition">Community</a></li>
+                  <li><a href="#features" className="hover:text-white transition group relative py-1">
+                    Features
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#349156] group-hover:w-full transition-all duration-300"></span>
+                  </a></li>
+                  <li><a href="#hero" className="hover:text-white transition group relative py-1">
+                    Dashboard
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#349156] group-hover:w-full transition-all duration-300"></span>
+                  </a></li>
+                  <li><a href="#social-proof" className="hover:text-white transition group relative py-1">
+                    Community
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#349156] group-hover:w-full transition-all duration-300"></span>
+                  </a></li>
                </ul>
             </div>
             <div>
                <h4 className="text-lg font-black mb-6 border-b-2 border-[#349156] w-fit">Support</h4>
                <ul className="space-y-4 text-gray-500 text-sm font-bold">
-                  <li><a href="#faq" className="hover:text-white transition">FAQ</a></li>
+                  <li><a href="#faq" className="hover:text-white transition group relative py-1">
+                    FAQ
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#349156] group-hover:w-full transition-all duration-300"></span>
+                  </a></li>
                   <li><Link to="#" className="hover:text-white transition">Contact</Link></li>
                   <li><Link to="#" className="hover:text-white transition">Legal</Link></li>
                </ul>
