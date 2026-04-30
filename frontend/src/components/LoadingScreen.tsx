@@ -74,8 +74,8 @@ const InnovativeLoader: React.FC = () => {
           <div className="absolute inset-12 border-[1px] border-[#349156]/20 rounded-full border-b-[#349156] animate-[spin_4s_linear_infinite_reverse]" />
           <div className="absolute inset-16 border-[1px] border-[#349156]/10 rounded-full" />
           
-          {/* Central Logo Container */}
-          <div className="relative w-44 h-44 bg-white rounded-[3rem] shadow-[0_30px_70px_rgba(52,145,86,0.2)] flex items-center justify-center group overflow-hidden border border-gray-100/80 backdrop-blur-md">
+          {/* Central Logo Container - Circular Frame */}
+          <div className="relative w-44 h-44 bg-white rounded-full shadow-[0_30px_70px_rgba(52,145,86,0.2)] flex items-center justify-center group overflow-hidden border border-gray-100/80 backdrop-blur-md">
             <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-[#f0f9f4]" />
             <GraduationCap className="w-20 h-20 text-[#349156] relative z-10 animate-bounce" style={{ animationDuration: '2s' }} />
             
@@ -93,18 +93,6 @@ const InnovativeLoader: React.FC = () => {
               <Sparkles className="absolute top-4 right-4 w-6 h-6 text-[#349156] animate-ping" />
             )}
           </div>
-        </div>
-
-        {/* Textual Identity - Larger and Cleaner */}
-        <div className="mt-20 text-center">
-            <h1 className="text-5xl font-black text-gray-900 tracking-tighter">
-              Noto<span className="text-[#349156] relative">Space
-                <span className="absolute -top-2 -right-6 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#349156] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[#349156]"></span>
-                </span>
-              </span>
-            </h1>
         </div>
       </div>
 
