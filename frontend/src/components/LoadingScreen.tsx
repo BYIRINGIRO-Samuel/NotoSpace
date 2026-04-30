@@ -20,7 +20,7 @@ const InnovativeLoader: React.FC = () => {
         {/* The Animated Trail & Pencil */}
         <div className="absolute inset-0 animate-[spin_4s_linear_infinite]">
           
-          {/* Dynamic "Ink" Trail - Spaced dots starting from the pencil's rubber part */}
+          {/* Dynamic "Ink" Trail - High Visibility */}
           {[...Array(22)].map((_, i) => (
             <div 
               key={i}
@@ -31,29 +31,30 @@ const InnovativeLoader: React.FC = () => {
                 top: '50%',
                 left: '50%',
                 transform: `rotate(${255 - i * 10}deg) translateY(-110px) translateX(-50%)`,
-                opacity: Math.max(1 - i * 0.04, 0),
+                // Increased opacity for better visibility
+                opacity: Math.max(1 - i * 0.03, 0.1),
               }}
             />
           ))}
 
-          {/* The Flying Pencil - Rubber part leading the trail */}
+          {/* The Flying Pencil - Solid Color */}
           <div 
             className="absolute top-1/2 left-1/2"
             style={{ transform: `rotate(290deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
           >
             <div className="relative">
-                <Pencil className="w-14 h-14 text-[#349156] -rotate-[45deg]" />
-                <div className="absolute top-1 right-1 w-4 h-4 bg-[#349156]/20 rounded-full blur-sm" />
+                <Pencil className="w-14 h-14 text-[#349156] -rotate-[45deg] drop-shadow-sm" />
+                <div className="absolute top-1 right-1 w-4 h-4 bg-[#349156]/30 rounded-full blur-sm" />
             </div>
           </div>
         </div>
 
-        {/* Center Text - Reduced size and added smooth animation */}
+        {/* Center Text - High Visibility & Staggered Animation */}
         <div className="flex items-center justify-center gap-1">
           {"LOADING".split("").map((char, index) => (
             <span 
               key={index}
-              className="text-[#349156] font-black text-lg tracking-widest uppercase opacity-20 animate-text-fade"
+              className="text-[#349156] font-extrabold text-xl tracking-widest uppercase animate-text-fade"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {char}
@@ -68,8 +69,8 @@ const InnovativeLoader: React.FC = () => {
           to { transform: rotate(360deg); }
         }
         @keyframes text-fade {
-          0%, 100% { opacity: 0.2; transform: scale(1); filter: blur(0px); }
-          50% { opacity: 0.5; transform: scale(1.1); filter: blur(1px); }
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.1); }
         }
         .animate-text-fade {
           animation: text-fade 2s ease-in-out infinite;
