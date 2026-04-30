@@ -30,7 +30,6 @@ const InnovativeLoader: React.FC = () => {
                 height: `${Math.max(12 - i * 0.5, 2)}px`,
                 top: '50%',
                 left: '50%',
-                // Pushed the start of the trail back to 255deg (from 265deg) to increase separation on both sides
                 transform: `rotate(${255 - i * 10}deg) translateY(-110px) translateX(-50%)`,
                 opacity: Math.max(1 - i * 0.04, 0),
               }}
@@ -40,22 +39,26 @@ const InnovativeLoader: React.FC = () => {
           {/* The Flying Pencil - Rubber part leading the trail */}
           <div 
             className="absolute top-1/2 left-1/2"
-            // Pushing the pencil even further ahead to 290deg for maximum separation
             style={{ transform: `rotate(290deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
           >
             <div className="relative">
-                {/* Pencil Icon: Rubber part (top) is now the leader point */}
                 <Pencil className="w-14 h-14 text-[#349156] -rotate-[45deg]" />
-                
-                {/* Subtle highlight at the rubber part where dots emerge */}
                 <div className="absolute top-1 right-1 w-4 h-4 bg-[#349156]/20 rounded-full blur-sm" />
             </div>
           </div>
         </div>
 
-        {/* Center Text */}
-        <div className="text-[#349156] font-black text-4xl tracking-[0.25em] uppercase opacity-30 select-none">
-          LOADING
+        {/* Center Text - Reduced size and added smooth animation */}
+        <div className="flex items-center justify-center gap-1">
+          {"LOADING".split("").map((char, index) => (
+            <span 
+              key={index}
+              className="text-[#349156] font-black text-lg tracking-widest uppercase opacity-20 animate-text-fade"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {char}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -63,6 +66,13 @@ const InnovativeLoader: React.FC = () => {
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        @keyframes text-fade {
+          0%, 100% { opacity: 0.2; transform: scale(1); filter: blur(0px); }
+          50% { opacity: 0.5; transform: scale(1.1); filter: blur(1px); }
+        }
+        .animate-text-fade {
+          animation: text-fade 2s ease-in-out infinite;
         }
       `}</style>
     </div>
