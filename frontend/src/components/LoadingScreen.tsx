@@ -15,7 +15,6 @@ const InnovativeLoader: React.FC = () => {
   return (
     <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-all duration-1000 ${isClosing ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100 scale-100'}`}>
       
-      {/* Centered Container */}
       <div className="relative w-64 h-64 flex items-center justify-center">
         
         {/* The Animated Trail & Pencil */}
@@ -27,29 +26,25 @@ const InnovativeLoader: React.FC = () => {
               key={i}
               className="absolute bg-[#349156] rounded-full"
               style={{
-                // Dots start large (12px) and shrink
                 width: `${Math.max(12 - i * 0.5, 2)}px`,
                 height: `${Math.max(12 - i * 0.5, 2)}px`,
                 top: '50%',
                 left: '50%',
-                // Spacing between dots (approx 10 degrees)
                 // Positioned behind the pencil's leader position
-                transform: `rotate(${268 - i * 10}deg) translateY(-110px) translateX(-50%)`,
+                transform: `rotate(${265 - i * 10}deg) translateY(-110px) translateX(-50%)`,
                 opacity: Math.max(1 - i * 0.04, 0),
               }}
             />
           ))}
 
-          {/* The Flying Pencil - Correctly oriented so the Rubber (top of icon) is at the trail start */}
+          {/* The Flying Pencil - Rubber part leading the trail */}
           <div 
             className="absolute top-1/2 left-1/2"
-            style={{ transform: `rotate(270deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
+            // Adjusted rotation to 282deg to push the pencil further ahead of the trail for better separation
+            style={{ transform: `rotate(282deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
           >
             <div className="relative">
-                {/* Pencil Icon: In Lucide, tip is bottom-left, rubber is top-right. */}
-                {/* We rotate it so the rubber part (top) is the point of contact with the trail. */}
-                {/* A rotation of -45deg or -135deg might be needed depending on the "upside down" feedback. */}
-                {/* Let's try to make it upright-ish like the image. */}
+                {/* Pencil Icon: Rubber part (top) is now the leader point */}
                 <Pencil className="w-14 h-14 text-[#349156] -rotate-[45deg]" />
                 
                 {/* Subtle highlight at the rubber part where dots emerge */}
