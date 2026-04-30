@@ -15,49 +15,51 @@ const InnovativeLoader: React.FC = () => {
   return (
     <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-all duration-1000 ${isClosing ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100 scale-100'}`}>
       
-      {/* Smaller Container */}
-      <div className="relative w-60 h-60 flex items-center justify-center">
+      {/* Centered Container */}
+      <div className="relative w-64 h-64 flex items-center justify-center">
         
         {/* The Animated Trail & Pencil */}
         <div className="absolute inset-0 animate-[spin_4s_linear_infinite]">
           
-          {/* Dynamic "Ink" Trail - Spaced out and starting from the tail */}
-          {[...Array(25)].map((_, i) => (
+          {/* Dynamic "Ink" Trail - Spaced dots starting from the pencil's rubber part */}
+          {[...Array(22)].map((_, i) => (
             <div 
               key={i}
               className="absolute bg-[#349156] rounded-full"
               style={{
-                // Starting big (14px) and getting smaller
-                width: `${Math.max(14 - i * 0.5, 2)}px`,
-                height: `${Math.max(14 - i * 0.5, 2)}px`,
+                // Dots start large (12px) and shrink
+                width: `${Math.max(12 - i * 0.5, 2)}px`,
+                height: `${Math.max(12 - i * 0.5, 2)}px`,
                 top: '50%',
                 left: '50%',
-                // Increased spacing between dots (8 degrees)
-                // Offset by a few degrees to align with the pencil tail
-                transform: `rotate(${265 - i * 9}deg) translateY(-110px) translateX(-50%)`,
+                // Spacing between dots (approx 10 degrees)
+                // Positioned behind the pencil's leader position
+                transform: `rotate(${268 - i * 10}deg) translateY(-110px) translateX(-50%)`,
                 opacity: Math.max(1 - i * 0.04, 0),
               }}
             />
           ))}
 
-          {/* The Flying Pencil - Positioned so the rubber part leads the trail */}
+          {/* The Flying Pencil - Correctly oriented so the Rubber (top of icon) is at the trail start */}
           <div 
             className="absolute top-1/2 left-1/2"
-            style={{ transform: `rotate(272deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
+            style={{ transform: `rotate(270deg) translateY(-110px) translateX(-50%) translateY(-50%)` }}
           >
             <div className="relative">
-                {/* Pencil Body - Rotated so the Tail (Rubber) is at the trail's start */}
-                {/* The tip points towards the center or outward, while the rubber is on the path */}
-                <Pencil className="w-12 h-12 text-[#349156] rotate-[45deg]" />
+                {/* Pencil Icon: In Lucide, tip is bottom-left, rubber is top-right. */}
+                {/* We rotate it so the rubber part (top) is the point of contact with the trail. */}
+                {/* A rotation of -45deg or -135deg might be needed depending on the "upside down" feedback. */}
+                {/* Let's try to make it upright-ish like the image. */}
+                <Pencil className="w-14 h-14 text-[#349156] -rotate-[45deg]" />
                 
-                {/* Visual marker at the tail (rubber) where dots emerge */}
-                <div className="absolute top-1 left-1 w-3 h-3 bg-[#349156]/20 rounded-full blur-sm" />
+                {/* Subtle highlight at the rubber part where dots emerge */}
+                <div className="absolute top-1 right-1 w-4 h-4 bg-[#349156]/20 rounded-full blur-sm" />
             </div>
           </div>
         </div>
 
-        {/* Center Text - Refined Scale */}
-        <div className="text-[#349156] font-black text-3xl tracking-[0.3em] uppercase opacity-30 select-none">
+        {/* Center Text */}
+        <div className="text-[#349156] font-black text-4xl tracking-[0.25em] uppercase opacity-30 select-none">
           LOADING
         </div>
       </div>
